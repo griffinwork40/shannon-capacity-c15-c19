@@ -1,0 +1,25 @@
+float before 7.301633810370767
+float after refine 7.301635000991094
+  n0 = S3f(R1, R1, R1)
+  n1 = S3e(R1, R1, R1)
+  n2 = S3f(n0, n1, n0)
+  n3 = S3f(n0, n0, n0)
+  n4 = S3f(n2, n3, n3)
+  n5 = S3g(n4, R1, n4)
+  n6 = S2a(R1, Rf)
+  n7 = S3f(n3, R1, n3)
+  n8 = S3g(n5, n6, n7)
+  t9 = 63 x [y <- S3g(y, R1, R1)] starting at y = n5
+  n10 = S3g(n5, R1, t9)
+  n11 = S3g(n8, R1, n10)
+  t12 = 3 x [y <- S3g(y, R1, R1)] starting at y = n5
+  n13 = S3g(n5, R1, t12)
+  t14 = 5 x [y <- S3g(y, R1, R1)] starting at y = n13
+  n15 = S3g(t14, n7, R1)
+  t16 = 19 x [y <- S3g(y, R1, R1)] starting at y = n5
+  n17 = S3g(n5, R1, t16)
+  t18 = 0 x [y <- S3g(y, R1, R1)] starting at y = n17
+  n19 = S3g(t18, n7, R1)
+  n20 = S3g(n8, R1, n17)
+  M = K4b(n11, n15, n19, n20)
+{"n": 15, "value": "7.301635000991096199", "dim": 3424, "E": 856, "base_d": 4, "digits": 2957, "lean_nodes": 106, "beats_bpz_exact": true, "bpz": "7.301628695930103", "secs": 0.2}

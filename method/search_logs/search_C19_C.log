@@ -1,0 +1,11 @@
+C19: BPZ 9.357200030000796; Emax 11856 maxnodes 600; tails: [('S3e@0[ww]', 9.357174296), ('S3f@1[ww]', 9.357162909), ('S3g@1[ww]', 9.357162908), ('S3e@0[ws]', 9.357155563), ('S2b@0[w]', 9.357150557), ('S3d@1[ss]', 9.357149273), ('S3c@1[ss]', 9.357149257), ('S3g@0[ww]', 9.357148237)]
+float control (BPZ terminal children): 9.357200030000794
+C19 gen 0: 274 kept, best 9.3572026995881 kind copies (6.1s)
+C19 gen 1: 274 kept, best 9.3572027760513 kind mixed (51.9s)
+C19 gen 2: 274 kept, best 9.3572028017304 kind mixed (51.4s)
+C19 gen 3: 250 kept, best 9.3572028096413 kind mixed (56.2s)
+C19 gen 4: 250 kept, best 9.3572028096413 kind mixed (57.5s)
+C19 gen 5: 250 kept, best 9.3572028096413 kind mixed (57.5s)
+C19 gen 6: 250 kept, best 9.3572028096413 kind mixed (56.5s)
+C19 gen 7: 250 kept, best 9.3572028096413 kind mixed (57.3s)
+FINAL 19 9.357202809641255 wrote /home/griffinlong/discovery-2026-09/lanes/O_opt/best_C19_C.json

@@ -1,0 +1,18 @@
+# work directory created by artifact/check.sh (BPZ clone, Lean build)
+c15-c19-check/
+# LaTeX build by-products
+*.aux
+*.log
+!logs/*.log
+!artifact/*.log
+!method/search_logs/*.log
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+# Python / editor
+__pycache__/
+*.pyc
+.venv/
+.DS_Store

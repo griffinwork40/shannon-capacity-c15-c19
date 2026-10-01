@@ -1,0 +1,73 @@
+2026-10-01T10:18:55Z | arxiv_sc_cycle | http://export.arxiv.org/api/query?search_query=all:%22Shannon%20capacity%22%20AND%20(all:cycle%20OR%20all:cycles%20OR%20all:odd)&sortBy=submittedDate&sortOrder=descending&max_results=100 | entries=0
+2026-10-01T10:18:58Z | arxiv_sc_all | http://export.arxiv.org/api/query?search_query=all:%22Shannon%20capacity%22&sortBy=submittedDate&sortOrder=descending&max_results=200 | entries=0
+2026-10-01T10:19:01Z | arxiv_ids | http://export.arxiv.org/api/query?id_list=2607.29681,2607.27869,2607.21517,2608.30273&max_results=10 | entries=0
+2026-10-01T10:19:17.077429Z | arXiv API sc_cycle | https://export.arxiv.org/api/query?search_query=all%3A%22Shannon+capacity%22+AND+%28all%3Acycle+OR+all%3Acycles+OR+all%3Aodd%29&sortBy=submittedDate&sortOrder=descending&max_results=200 | totalResults=14 returned=14 since2026-06-01=3
+2026-10-01T10:19:22.124694Z | arXiv API sc_all | https://export.arxiv.org/api/query?search_query=all%3A%22Shannon+capacity%22&sortBy=submittedDate&sortOrder=descending&max_results=200 | totalResults=280 returned=200 since2026-06-01=16
+2026-10-01T10:19:26.489704Z | arXiv API zero_error_cycle | https://export.arxiv.org/api/query?search_query=all%3A%22zero-error%22+AND+all%3Acapacity+AND+%28all%3Acycle+OR+all%3Apentagon+OR+all%3Aheptagon%29&sortBy=submittedDate&sortOrder=descending&max_results=200 | totalResults=6 returned=6 since2026-06-01=2
+2026-10-01T10:19:31.100200Z | arXiv API strong_product_indep | https://export.arxiv.org/api/query?search_query=all%3A%22strong+product%22+AND+all%3Aindependence&sortBy=submittedDate&sortOrder=descending&max_results=200 | totalResults=25 returned=25 since2026-06-01=2
+2026-10-01T10:19:35.674635Z | arXiv API abs_shannon_odd | https://export.arxiv.org/api/query?search_query=abs%3AShannon+AND+abs%3A%22odd+cycles%22&sortBy=submittedDate&sortOrder=descending&max_results=200 | totalResults=5 returned=5 since2026-06-01=4
+2026-10-01T10:19:41.406685Z | arXiv API ti_shannon | https://export.arxiv.org/api/query?search_query=ti%3AShannon+AND+ti%3Acapacity&sortBy=submittedDate&sortOrder=descending&max_results=200 | totalResults=65 returned=65 since2026-06-01=6
+2026-10-01T10:19:45.794628Z | arXiv API lovasz_theta_cycle | https://export.arxiv.org/api/query?search_query=all%3A%22independent+sets%22+AND+all%3A%22strong+powers%22&sortBy=submittedDate&sortOrder=descending&max_results=200 | totalResults=6 returned=6 since2026-06-01=2
+2026-10-01T10:19:50.014886Z | arXiv API ids | https://export.arxiv.org/api/query?id_list=2607.29681%2C2607.27869%2C2607.21517%2C2608.30273&max_results=10 | totalResults=4 returned=4 since2026-06-01=4
+2026-10-01 | arXiv abs pages (version history) | arxiv.org/abs/{2607.29681,2607.27869,2607.21517,2608.30273} | versions: 29681=v1 only (31 Jul); 27869=v1 only (30 Jul); 21517=v1,v2 (v2 30 Jul); 30273=v1 only (31 Aug). Probes of v2/v3 URLs: 404 except 21517v2=200
+2026-10-01 | Semantic Scholar citations arXiv:2607.29681 | api.semanticscholar.org/graph/v1/paper/arXiv:2607.29681/citations | n=1 (2608.30273)
+2026-10-01 | Semantic Scholar citations arXiv:2607.27869 | ... | n=2 (2608.30273, 2607.29681)
+2026-10-01 | Semantic Scholar citations arXiv:2607.21517 | ... | n=3 (2609.17773 "Generalized short monochromatic odd cycles" 2026-09-15 [Ramsey, irrelevant], 2608.30273, 2607.27869)
+2026-10-01 | Semantic Scholar citations arXiv:2608.30273 | ... | n=0
+2026-10-01 | S2 /paper/search "Shannon capacity odd cycles" | rate-limited 429
+2026-10-01 | S2 /paper/search/bulk "Shannon capacity odd cycles" | total=20; since 2026-06: 3 (2608.30273, 2607.29681, 2607.21517)
+2026-10-01 | S2 bulk "Shannon capacity C15" | total=2; since 2026-06: 0
+2026-10-01 | S2 bulk "Shannon capacity cycle lower bound Lean" | total=0
+2026-10-01 | OpenAlex work lookup + filter=cites: for 4 arXiv IDs | api.openalex.org/works/doi:10.48550/arXiv.<id> | all 4 found; cited_by_count=0 each; cites-filter count=0 each. NOTE OpenAlex title for 2608.30273 = "Searching the recursion tree improves the lower bound on the Shannon capacity of C7" (Ravi Tandon), with Zenodo DOIs 22727743/44/882, 22728159, 22728595
+2026-10-01 | OpenAlex search "Shannon capacity odd cycles" from 2026-06-01 | count=121 (first 100 reviewed); relevant: 2607.21517, 2607.29681, 2607.27869, Zenodo 22643652 "An independent set of size 1129 in the sixth strong power of C7" (2026-09-07), Zenodo 21229862/3 "Beyond Static Bounds..." (2026-07-07)
+2026-10-01 | OpenAlex search "Shannon capacity cycle" from 2026-06-01 | count=4662 (first 100 reviewed); no new relevant
+2026-10-01 | OpenAlex search "independent set strong power cycle" from 2026-06-01 | count=49128 (first 100 reviewed, all noise)
+2026-10-01 | Zenodo API q="Shannon capacity" sort=newest (2 pages x25) | total=79; relevant since 2026-06: 22979509 (Oktiabrev, C7 private pairs, 2026-09-26), 22728595/22727882/22728159 (Stavriianov, C7 3.258834362..., 2026-09-12), 22727904 (Stavriianov alpha(C7^6)>=1129), 20753476 (Simas, theory), 21229863 (Petkes, essay). None mention C15/C19 bounds.
+2026-10-01 | Zenodo q="Shannon capacity" cycle | total=61619 (noise, 50 newest reviewed)
+2026-10-01 | Zenodo q=C19 Shannon | total=9491 (noise)
+2026-10-01 | Zenodo q=C15 Shannon | total=9694 (noise)
+2026-10-01 | Zenodo q=strong power independent set | total=631734 (noise)
+2026-10-01 | GitHub API repos/spectra-research/shannon-capacity-lean | pushed_at 2026-08-10T09:03:05Z; branches=1 (main @aa21eeb); tags=0; releases=0; commits=3; issues(all)=0; PRs(all)=0; forks=1 (xyz2606); events=0 recent
+2026-10-01 | GitHub fork xyz2606/shannon-capacity-lean (Y. Gao) | branches main@26391d0 (behind BPZ by 1), refined-c7-bound@9c0e287 (2026-08-08); diff vs 26391d0 touches only C7 files + README; README table C15 7.301600548493336 (p=4000), C19 9.357192717365020 (p=16944) i.e. pre-aa21eeb BPZ values; refined C7 3.258819379708504...
+2026-10-01 | GitHub user spectra-research repos | 2 (asymptotic-tensor-rank-semicontinuity 2026-06-09, shannon-capacity-lean)
+2026-10-01 | GitHub repo search "shannon capacity" sort=updated | total=61; relevant 2026: aoktyabrev/shannon (C7), matthewprotti/c11-... (C11/C13), vibemathing/... (C7 harness, empty), tandonravi/C7-... (C7), spectra-research, xyz2606/recursive_construction... (C7), nathanielitty/lower-bounds-for-shannon-capacity (C7/11/13/15, 2026-07-30), shannoncapacity07/Improved-... (IRCR mirror 2026-07-29), jzuiddam/asymptotic-spectrum-distance (2026-06-06)
+2026-10-01 | GitHub repo search "shannon-capacity" | total=58 (same set)
+2026-10-01 | GitHub repo search "shannon capacity odd cycle" | total=2; "shannon capacity lean" total=5; "strong power cycle independent" 1 (old); "C7 shannon" 2; "odd cycle shannon" 2; "zero-error capacity cycle" 0; "C19 shannon" 0; "C15 shannon" 0
+2026-10-01 | GitHub code search "cycleGraph 19" | total=30 (Huckel chemistry Lean, irrelevant)
+2026-10-01 | GitHub code search "cycleGraph 15" | total=21 (Huckel + jzuiddam C15ThirdPower, older)
+2026-10-01 | GitHub code search shannonCapacity | total=402 (mostly RF; jzuiddam Lean repos)
+2026-10-01 | GitHub code search "Shannon capacity" language:Lean | total=4 (formal-conjectures, lean-pool, ocfnash, ai-safety atlas)
+2026-10-01 | GitHub code search "Shannon capacity" "C19" | total=107 (noise; u00dxk2/bounds-ledger mirror of teorth 9a)
+2026-10-01 | GitHub code search "Shannon capacity" "C_19" | total=4 (noise)
+2026-10-01 | GitHub code search "Theta(C19)" / "Theta(C15)" | 0 / 0
+2026-10-01 | GitHub code search "9.3572" / "7.30163" / "7.30162" / "9.35720" | 538624/41088/38912/36800 (numeric noise; first 24 each inspected, none relevant)
+2026-10-01 | GitHub code search strongPower cycleGraph | total=57 (jzuiddam, protti, lean-eval pentagon)
+2026-10-01 | GitHub code search "shannon-capacity-lean" | total=76 (teorth 9a.md, formal-conjectures Green #38, protti, dittert audit)
+2026-10-01 | GitHub code search CertC19 / CertC15 | 2 / 2 (protti SOURCE_HASHES.json only; noise)
+2026-10-01 | teorth/optimizationproblems constants/9a.md (Theta(C7) page) | last commit 3fcd485 2026-09-06; lists C15 7.301600534487, C19 9.357192705918 (BPZ v1) as side note. No C15/C19 constant pages.
+2026-10-01 | GitHub issue search repo:teorth/optimizationproblems shannon | total=8 (PR174 C7 record 2026-09-06; PR168 corrections); none C15/C19
+2026-10-01 | GitHub issue search "Shannon capacity" C19 | total=2 (ScientistsLastExam benchmark task #34: Lovasz-theta/greedy benchmark, no record claim)
+2026-10-01 | GitHub issue search "Shannon capacity" C15 | total=3 (DailyArXiv bots)
+2026-10-01 | GitHub issue search "Shannon capacity" "odd cycles" | total=16 (arxiv bots, bounds-ledger drift, graph-theory-AI campaign)
+2026-10-01 | GitHub issue search shannon-capacity-lean | total=174 (noise)
+2026-10-01 | GitHub issue search "Shannon capacity" lean cycle | total=13 (no C15/C19 claims)
+2026-10-01 | Wikipedia "Shannon capacity of a graph" raw wikitext (current rev 1377677202, 2026-09-30) | no 2026 bounds, no C15/C19 values; revision history: Twelve13 added BPZ-2026 sentence 2026-09-07 and 2026-09-30, both reverted (JayBeeEll 09-12, Eigenbra 09-30). Reverted text cites only arXiv:2607.29681 and BPZ repo; gives no C15/C19 numbers.
+2026-10-01 | Zuiddam homepage staff.fnwi.uva.nl/j.zuiddam | 200; lists 2607.29681; talks since Aug: AGSTA Busan 14 Aug (tensors), CWI 8 Sep "AI for (or against) the working mathematician", AI4Science 23 Sep, LAB42 8 Oct, KWG 23 Oct 2026; no slides with new C15/C19 numbers linked
+2026-10-01 | jzuiddam GitHub repos | latest pushes matrix-mult-exponent 2026-09-25, asymptotic-spectrum-distance 2026-06-06; nothing new on odd cycles
+2026-10-01 | svenpolak.nl 500; pjotrbuys.nl DNS fail; jzuiddam.com DNS fail; nathanielitty.com 403; sites.google.com/view/ygao2606 200 but JS-only (Playwright missing); GitHub users svpolak/pjotrbuys 404
+2026-10-01 | tandonravi.github.io (commits to 2026-10-01) | index.html has no shannon mention; tandonravi C7 repo last push 2026-09-01, no C15/C19 files
+2026-10-01 | nathanielitty/lower-bounds-for-shannon-capacity | last push 2026-07-30; dirs c7 c11 c13 c15 only
+2026-10-01 | StackExchange API MathOverflow "shannon capacity" since 2026-06-01 | 1 (Lovasz theta unit distance, irrelevant); "odd cycle" 5 (irrelevant); math.SE 0; cstheory 0
+2026-10-01 | OEIS search "Shannon capacity" 8, "odd cycles" 10, "C_19" 4, "independence number strong power cycle" 7, "strong product cycle independence" 7, "Shannon capacity cycle" 3 | none on alpha(C_n^d) for n=15,19 records
+2026-10-01 | Lean Zulip API (leanprover.zulipchat.com) | requires auth; public archive not searchable by API; Exa web search of archive found no Shannon capacity thread
+2026-10-01 | Exa web search x5 ("Shannon capacity C19 lower bound 2026", "Theta(C_15) ... September 2026", AlphaEvolve/OpenAI/DeepMind ..., "C_{19} 9.3572", twitter/x.com ..., Zulip, "beyond BPZ", Reichman follow-up, Polak/Buys talks) | 10 results each; all hits are the four known arXiv papers, BPZ/jzuiddam repos, VibeMathed, Google AlphaEvolve TCS blog (MAX-4-CUT, not Shannon). No new C15/C19 claim.
+2026-10-01 | VibeMathed /api/dataset (2.06 MB) + /problem/shannon-capacity-odd-cycles-records | odd-cycle entry lists BPZ v1 values C15 7.301600534487, C19 9.357192705918; only other Shannon frontier is C11 (Protti)
+2026-10-01 | teorth/optimizationproblems + u00dxk2/bounds-ledger | C7 only page; C15/C19 only as BPZ v1 side note
+2026-10-01 | google-deepmind/formal-conjectures GreensOpenProblems/38.lean | C7 only (cites BPZ)
+2026-10-01 | google-deepmind/alphaevolve_results, alphaevolve_repository_of_problems code search "shannon" | 0 / 1 (Kakeya notebook, irrelevant)
+2026-10-01 | tdwag123/AI-Math-Contributions json | only FunSearch 2023 Shannon entry
+2026-10-01 | GitHub commit search "Shannon capacity" since 2026-08-01 | 49; relevant only spectra-research, protti, Ratatosk32 (C7), ScientistsLastExam (benchmark), vibemathing; "shannon capacity C15" 0; "Theta(C19)" 20 (only BPZ aa21eeb relevant)
+2026-10-01 | arXiv listing pages math.CO/cs.IT/cs.DM/math.IT new+recent (2026-10-01) | no Shannon-capacity-of-cycles paper
+2026-10-01 | arXiv web search "Shannon capacity" order=-announced | 280 total; 16 IDs since 2026-06 (same as API)
+2026-10-01 | Tandon arXiv html 2608.30273 | only C7; mentions extending to other odd cycles as future work
+2026-10-01 | GitHub code search BaseC19Data/BaseC15Data/ShannonBounds/CertC19/'spectra-research/shannon-capacity-lean' | 1/2/373/2/76; only protti (hash manifest of BPZ files), cyanseek/VibeMath (VibeMathed mirror), wustep/maths (C7 only), yuriolive/proofstack notes, teorth, formal-conjectures, bounds-ledger: none with C15/C19 improvement

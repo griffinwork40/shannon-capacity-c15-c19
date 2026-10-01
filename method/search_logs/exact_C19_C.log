@@ -1,0 +1,31 @@
+float before 9.357202809641258
+float after refine 9.357203012726949
+  n0 = S3f(R1, R1, R1)
+  n1 = S3f(n0, n0, n0)
+  n2 = S3f(n1, n1, n1)
+  n3 = S3f(n2, n2, n2)
+  n4 = S3a(n3, n2, R1)
+  t5 = 265 x [y <- S3g(y, R1, R1)] starting at y = n4
+  n6 = S3e(n3, n2, R1)
+  t7 = 193 x [y <- S3g(y, R1, R1)] starting at y = n6
+  n8 = S3g(t5, R1, t7)
+  n9 = S3g(n8, R1, n3)
+  t10 = 0 x [y <- S3g(y, R1, R1)] starting at y = n9
+  n11 = S3g(t10, R1, n2)
+  t12 = 153 x [y <- S3g(y, R1, R1)] starting at y = n4
+  t13 = 52 x [y <- S3g(y, R1, R1)] starting at y = n6
+  n14 = S3g(t12, R1, t13)
+  n15 = S3g(n14, R1, n3)
+  n16 = S3g(n15, R1, R1)
+  t17 = 177 x [y <- S3g(y, R1, R1)] starting at y = n4
+  t18 = 68 x [y <- S3g(y, R1, R1)] starting at y = n6
+  n19 = S3g(t17, R1, t18)
+  n20 = S3g(n19, R1, n3)
+  n21 = S3g(n20, R1, R1)
+  t22 = 230 x [y <- S3g(y, R1, R1)] starting at y = n4
+  t23 = 80 x [y <- S3g(y, R1, R1)] starting at y = n6
+  n24 = S3g(t22, R1, t23)
+  n25 = S3g(n24, R1, n3)
+  n26 = S3g(n25, R1, n2)
+  M = K4b(n11, n16, n21, n26)
+{"n": 19, "value": "9.357203012726939864", "dim": 14800, "E": 3700, "base_d": 4, "digits": 14373, "lean_nodes": 1236, "beats_bpz_exact": true, "bpz": "9.357200030000796", "secs": 1.8}

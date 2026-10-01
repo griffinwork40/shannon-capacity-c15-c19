@@ -1,0 +1,1673 @@
+diff -ruN a/ShannonBounds/CapCertC15b.lean b/ShannonBounds/CapCertC15b.lean
+--- a/ShannonBounds/CapCertC15b.lean	1969-12-31 19:00:00
++++ b/ShannonBounds/CapCertC15b.lean	2026-10-01 07:16:24
+@@ -0,0 +1,90 @@
++/-
++Contributed in 2026 by Griffin Long, with the AI agent agent-afk, as an addition to the
++ShannonBounds framework of Pjotr Buys, Sven Polak and Jeroen Zuiddam (who did not write this
++file). Released under Apache 2.0 license as described in the file LICENSE.
++(This file: a variant of `CapCertC15.lean` for the schedule of `CertC15b.lean`.)
++-/
++import ShannonBounds.CertC15b
++import ShannonBounds.CapC15
++import ShannonBounds.Decimal
++
++/-!
++# `Theta (C15) >= 7.301635000991096`
++
++`CertC15b.bound` is conditional on a port system whose seven families have the sizes in
++`w0`.  The base system of `BaseC15` has exactly those sizes, all proved there.  Transporting
++along `strongPower Cyc15 3424 ≃g strongPower G4 856` gives the capacity bound.
++-/
++
++namespace ShannonBounds
++namespace CapCertC15b
++
++open SimpleGraph
++
++/-- The seven families of the `C15` base system have the sizes recorded in `w0`. -/
++theorem base_fam_card : ∀ a, (BaseC15.base.fam a).card = CertC15b.w0 a := by
++  intro a
++  cases a
++  · rw [RichPortSystem.card_fam_B, BaseC15.base_N, BaseC15.base_d]; rfl
++  · rw [RichPortSystem.card_fam_N, BaseC15.base_eta]; rfl
++  · exact BaseC15.base_Xc_false
++  · exact BaseC15.base_Xc_true
++  · rw [RichPortSystem.card_fam_O, BaseC15.base_d]; rfl
++  · rw [RichPortSystem.card_fam_H, BaseC15.base_d]; rfl
++  · rw [RichPortSystem.card_fam_V, BaseC15.base_d]; rfl
++
++/-- The independent set, in the `856`-th strong power of the base graph. -/
++theorem alpha_G4_ge : CertC15b.M ≤ (strongPower BaseC15.G4 856).indepNum :=
++  CertC15b.bound BaseC15.base base_fam_card
++
++/-- `C15^(box 3424)` is the `856`-th strong power of `C15^(box 4)`. -/
++def iso3424 : strongPower BaseC15.Cyc15 3424 ≃g strongPower BaseC15.G4 856 :=
++  (strongPower_mul_iso BaseC15.Cyc15 4 856).trans
++    (strongPower_congr CapC15.G4_iso 856).symm
++
++/-- The independent set, in `C15^(box 3424)`. -/
++theorem alpha_strongPower_ge :
++    CertC15b.M ≤ (strongPower BaseC15.Cyc15 3424).indepNum := by
++  rw [independenceNumber_iso iso3424]
++  exact alpha_G4_ge
++
++/-- The capacity bound, in exact root form. -/
++theorem shannonCapacity_Cyc_ge :
++    ((CertC15b.M : ℕ) : ℝ) ^ ((1 : ℝ) / (3424 : ℕ)) ≤ shannonCapacity BaseC15.Cyc15 := by
++  calc ((CertC15b.M : ℕ) : ℝ) ^ ((1 : ℝ) / (3424 : ℕ))
++      ≤ (((strongPower BaseC15.Cyc15 3424).indepNum : ℕ) : ℝ) ^ ((1 : ℝ) / (3424 : ℕ)) := by
++        apply Real.rpow_le_rpow (by positivity) _ (by positivity)
++        exact_mod_cast alpha_strongPower_ge
++    _ ≤ shannonCapacity BaseC15.Cyc15 :=
++        shannonCapacity_ge_root BaseC15.Cyc15 3424 (by norm_num)
++
++theorem shannonCapacity_cycleGraph_ge :
++    ((CertC15b.M : ℕ) : ℝ) ^ ((1 : ℝ) / (3424 : ℕ))
++      ≤ shannonCapacity (SimpleGraph.cycleGraph 15) := by
++  rw [← CapC15.Cyc_eq_cycleGraph]
++  exact shannonCapacity_Cyc_ge
++
++/-- **`Theta (cycleGraph 15) >= 7.301635000991096`**. -/
++theorem shannonCapacity_cycleGraph_15_ge :
++    (7.301635000991096 : ℝ) ≤ shannonCapacity (SimpleGraph.cycleGraph 15) := by
++  have h := shannonCapacity_cycleGraph_ge
++  refine le_trans ?_ h
++  rw [show ((7.301635000991096 : ℝ))
++      = ((7301635000991096 : ℕ) : ℝ) / ((1000000000000000 : ℕ) : ℝ) by norm_num]
++  exact Decimal.decimal_le (by norm_num) (by norm_num) (by native_decide) le_rfl
++
++/-- The truncation is tight. -/
++theorem tight :
++    7301635000991096 ^ 3424 ≤ CertC15b.M * (10 ^ 15) ^ 3424 ∧
++      CertC15b.M * (10 ^ 15) ^ 3424 < 7301635000991097 ^ 3424 := by
++  constructor <;> native_decide
++
++/-- Strictly improves the bound of `CapCertC15` (BPZ). -/
++theorem improves : (7.301628695930103 : ℝ) < 7.301635000991096 := by norm_num
++
++end CapCertC15b
++end ShannonBounds
++
++#print axioms ShannonBounds.CertC15b.bound
++#print axioms ShannonBounds.CapCertC15b.shannonCapacity_cycleGraph_15_ge
++#print axioms ShannonBounds.CapCertC15b.tight
+diff -ruN a/ShannonBounds/CapCertC19c.lean b/ShannonBounds/CapCertC19c.lean
+--- a/ShannonBounds/CapCertC19c.lean	1969-12-31 19:00:00
++++ b/ShannonBounds/CapCertC19c.lean	2026-10-01 07:16:24
+@@ -0,0 +1,94 @@
++/-
++Contributed in 2026 by Griffin Long, with the AI agent agent-afk, as an addition to the
++ShannonBounds framework of Pjotr Buys, Sven Polak and Jeroen Zuiddam (who did not write this
++file). Released under Apache 2.0 license as described in the file LICENSE.
++(This file: a variant of `CapCertC19.lean` for the schedule of `CertC19c.lean`.)
++-/
++import ShannonBounds.CertC19c
++import ShannonBounds.CapC19
++import ShannonBounds.Decimal
++
++/-!
++# `Theta (C19) >= 9.357203012726939`
++
++`CertC19c.bound` is conditional on a port system whose seven families have the sizes in
++`w0`.  The base system of `BaseC19` has exactly those sizes, all proved there.  Transporting
++along `strongPower Cyc19 14800 ≃g strongPower G4 3700` gives the capacity bound.
++-/
++
++namespace ShannonBounds
++namespace CapCertC19c
++
++open SimpleGraph
++
++/-- The seven families of the `C19` base system have the sizes recorded in `w0`. -/
++theorem base_fam_card : ∀ a, (BaseC19.base.fam a).card = CertC19c.w0 a := by
++  intro a
++  cases a
++  · rw [RichPortSystem.card_fam_B, BaseC19.base_N, BaseC19.base_d]; rfl
++  · rw [RichPortSystem.card_fam_N, BaseC19.base_eta]; rfl
++  · exact BaseC19.base_Xc_false
++  · exact BaseC19.base_Xc_true
++  · rw [RichPortSystem.card_fam_O, BaseC19.base_d]; rfl
++  · rw [RichPortSystem.card_fam_H, BaseC19.base_d]; rfl
++  · rw [RichPortSystem.card_fam_V, BaseC19.base_d]; rfl
++
++/-- The independent set, in the `3700`-th strong power of the base graph. -/
++theorem alpha_G4_ge : CertC19c.M ≤ (strongPower BaseC19.G4 3700).indepNum :=
++  CertC19c.bound BaseC19.base base_fam_card
++
++/-- `C19^(box 14800)` is the `3700`-th strong power of `C19^(box 4)`. -/
++def iso14800 : strongPower BaseC19.Cyc19 14800 ≃g strongPower BaseC19.G4 3700 :=
++  (strongPower_mul_iso BaseC19.Cyc19 4 3700).trans
++    (strongPower_congr CapC19.G4_iso 3700).symm
++
++/-- The independent set, in `C19^(box 14800)`. -/
++theorem alpha_strongPower_ge :
++    CertC19c.M ≤ (strongPower BaseC19.Cyc19 14800).indepNum := by
++  rw [independenceNumber_iso iso14800]
++  exact alpha_G4_ge
++
++/-- The capacity bound, in exact root form. -/
++theorem shannonCapacity_Cyc_ge :
++    ((CertC19c.M : ℕ) : ℝ) ^ ((1 : ℝ) / (14800 : ℕ)) ≤ shannonCapacity BaseC19.Cyc19 := by
++  calc ((CertC19c.M : ℕ) : ℝ) ^ ((1 : ℝ) / (14800 : ℕ))
++      ≤ (((strongPower BaseC19.Cyc19 14800).indepNum : ℕ) : ℝ) ^ ((1 : ℝ) / (14800 : ℕ)) := by
++        apply Real.rpow_le_rpow (by positivity) _ (by positivity)
++        exact_mod_cast alpha_strongPower_ge
++    _ ≤ shannonCapacity BaseC19.Cyc19 :=
++        shannonCapacity_ge_root BaseC19.Cyc19 14800 (by norm_num)
++
++theorem shannonCapacity_cycleGraph_ge :
++    ((CertC19c.M : ℕ) : ℝ) ^ ((1 : ℝ) / (14800 : ℕ))
++      ≤ shannonCapacity (SimpleGraph.cycleGraph 19) := by
++  rw [← CapC19.Cyc_eq_cycleGraph]
++  exact shannonCapacity_Cyc_ge
++
++/-- **`Theta (cycleGraph 19) >= 9.357203012726939`**. -/
++theorem shannonCapacity_cycleGraph_19_ge :
++    (9.357203012726939 : ℝ) ≤ shannonCapacity (SimpleGraph.cycleGraph 19) := by
++  have h := shannonCapacity_cycleGraph_ge
++  refine le_trans ?_ h
++  rw [show ((9.357203012726939 : ℝ))
++      = ((9357203012726939 : ℕ) : ℝ) / ((1000000000000000 : ℕ) : ℝ) by norm_num]
++  exact Decimal.decimal_le (by norm_num) (by norm_num) (by native_decide) le_rfl
++
++/-- The truncation is tight. -/
++theorem tight :
++    9357203012726939 ^ 14800 ≤ CertC19c.M * (10 ^ 15) ^ 14800 ∧
++      CertC19c.M * (10 ^ 15) ^ 14800 < 9357203012726940 ^ 14800 := by
++  constructor <;> native_decide
++
++/-- Strictly improves the bound of `CapCertC19` (BPZ). -/
++theorem improves : (9.357200030000796 : ℝ) < 9.357203012726939 := by norm_num
++
++
++/-- Strictly improves the bound of CapCertC19b (lane L). -/
++theorem improves_1 : (9.357202700233073 : ℝ) < 9.357203012726939 := by norm_num
++
++end CapCertC19c
++end ShannonBounds
++
++#print axioms ShannonBounds.CertC19c.bound
++#print axioms ShannonBounds.CapCertC19c.shannonCapacity_cycleGraph_19_ge
++#print axioms ShannonBounds.CapCertC19c.tight
+diff -ruN a/ShannonBounds/CertC15b.lean b/ShannonBounds/CertC15b.lean
+--- a/ShannonBounds/CertC15b.lean	1969-12-31 19:00:00
++++ b/ShannonBounds/CertC15b.lean	2026-10-01 07:16:24
+@@ -0,0 +1,596 @@
++/-
++Contributed in 2026 by Griffin Long, with the AI agent agent-afk, as an addition to the
++ShannonBounds framework of Pjotr Buys, Sven Polak and Jeroen Zuiddam (who did not write this
++file). Released under Apache 2.0 license as described in the file LICENSE.
++(This file: generated by lanes/L2_lean/gen_dag.py from best_C15_A_ref.json; a DAG schedule
++in the framework of `CertC15.lean`, with the same base.)
++-/
++import ShannonBounds.PortRealisation
++import ShannonBounds.Layered
++import ShannonBounds.Reindex
++import ShannonBounds.Substitutions
++import ShannonBounds.TerminalCodes
++import ShannonBounds.DagTail
++
++set_option maxRecDepth 4000000
++set_option maxHeartbeats 0
++set_option synthInstance.maxSize 4000
++set_option exponentiation.threshold 20000
++
++/-!
++# `Theta (C15) >= 7.301635000991096`, a DAG schedule with several tails
++
++The same `C15^(box 4)` base as `CertC15`.  20 distinct nodes (shared sub-schedules are
++defined once), 4 of them iterated tails `y ↦ S (y, z1, z2)` written with `DagTail.tailIter`
++and sized by the induction `DagTail.w_tailIter`.  The terminal code `K` is applied to nodes of
++exponents `(314, 147, 169, 226)`, so `E = 856`, hence `C15^(box 3424)`.
++
++Node sizes are not literals: each node carries a `Sizes` value computed from its children's
++(`node2`, `node3`, `tailW`); `stepM` checks the one literal `M` by `native_decide`.
++
++Schedule (`t = J x [y <- S(y, z1, z2)]` from `y = start`):
++    n0 = S3f(R1, R1, R1)
++    n1 = S3e(R1, R1, R1)
++    n2 = S3f(n0, n1, n0)
++    n3 = S3f(n0, n0, n0)
++    n4 = S3f(n2, n3, n3)
++    n5 = S3g(n4, R1, n4)
++    n6 = S2a(R1, Rf)
++    n7 = S3f(n3, R1, n3)
++    n8 = S3g(n5, n6, n7)
++    n9 = 63 x [y <- S3g(y, R1, R1)] from y = n5
++    n10 = S3g(n5, R1, n9)
++    n11 = S3g(n8, R1, n10)
++    n12 = 3 x [y <- S3g(y, R1, R1)] from y = n5
++    n13 = S3g(n5, R1, n12)
++    n14 = 5 x [y <- S3g(y, R1, R1)] from y = n13
++    n15 = S3g(n14, n7, R1)
++    n16 = 19 x [y <- S3g(y, R1, R1)] from y = n5
++    n17 = S3g(n5, R1, n16)
++    n18 = S3g(n17, n7, R1)
++    n19 = S3g(n8, R1, n17)
++    M = K4b(n11, n15, n18, n19)
++-/
++namespace ShannonBounds
++namespace CertC15b
++
++open SimpleGraph DagTail
++
++/-- The terminal code. -/
++abbrev K : Code Letter Letter.sep 4 := TerminalCodes.K4b
++
++/-- The size of each of the seven families of the base port system. -/
++def w0 : Letter → Nat
++  | .B => 2839
++  | .N => 2833
++  | .A => 6
++  | .D => 3
++  | .O => 3
++  | .H => 3
++  | .V => 3
++
++/-- The same sizes after reindexing by `sigma`: `A`/`D` and `H`/`V` are exchanged. -/
++def w0f : Letter → Nat
++  | .B => 2839
++  | .N => 2833
++  | .A => 3
++  | .D => 6
++  | .O => 3
++  | .H => 3
++  | .V => 3
++
++/-- The size of the independent set the construction produces. -/
++def M : Nat :=
++  22412415576865115264982829511421653625576790527177406930181696636853365373492880035468349816722206934975708803023935854882493453719886411020259732726531843561489252841076594112619256968318717378842960313832695660334601393365722180738109120964668230610647358515661870484024245263524887247162678719496471075475496329032231257112271149735958327930211005385087325635040582102742466517448496583540446518992197155581403751699672727967057881091907665931268933279596868908553396606085196926660755116120793514538704624557606903634534008434090426031136126247466275504215964782271546232550968581996965451567627796732126087222804862198431777774553104868882627499147207964429571514842256298856384271956389250873607803073569730654590926714077933778009457940778437832530694606470238966140678233794586577330887595207618725330442334095247883466632069308331880274181588722048299216672096408511335453801831008593503732564239836542433268250836091279874179757857572845490773847168183529858885558644382132261049968122396060072585333390807107137572746632967532117422089376698939811964460585651985184953220059718096498017225120277896830176121005264116326576379592599374191785703812363486159580866956000472260657470281468163376436456619713220933049511216819265911372591954720341047213340992587016311784438229339045985666891736088560216555552267440998511603635074749120008020919841960600118866861411719854005269392399126439868697730180991255039696564277853678245913937336558849272328010869520726744467050706218988278220634986984533787021849740120134247202066525386643048662647084731687656753886333836207123999107023118273184340944058791299560036438225601365169696769206995931976031524059620209925499341087776143308726686551222574742429393966155865315674560192770426875687159643964100462426359740197536472625472831293633550298760667072903472570849427986607615849468177878865892831010523806784770637965681709683407902609217205029611111239358119610647287659884777026270695212562784120082322140871583285236284334207621598198262611982412523696358840370274861748399533805726077261423726018017981032985919514398078728801533567253784870043067936616480490552136119642224559950930257793775707156168548912624904446085332334610535153958158150783761941112898010260760209273089972039375072196727276936576914642584896536211946048238551694973110454465859231309819919196565950864752621805055923355554217963599362413508439648447186970100303923778985806992164028631491881392347826976361342695340354963556867957408928387132280204231644764200897322060733059420451215144034828730027721037947025887077407456961636294764699181368151815981752265350795240445906571085412378680197673259643852622534130595900468319230043122960686804730028072307172297199925616413838320925038236670305975389924427480115125443972092950960838626147519074212153346563431703865552932600369998636276916395457479611920833896055489997335259075393639351792379830522646156921579526480937470556347004662689064386393697279776353377970664416
++
++/-- Sizes of the base. -/
++def s1 : Sizes := Sizes.ofFun w0
++
++/-- Sizes of the reindexed base. -/
++def sf : Sizes := Sizes.ofFun w0f
++
++variable {α : Type*} [Fintype α] [DecidableEq α]
++  {G : SimpleGraph α} [DecidableRel G.Adj]
++
++/-- The base realisation, seen in the first strong power. -/
++def R1 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 1) :=
++  R.mapIso (strongPower_one_iso G).symm
++
++lemma w1 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (b : Letter) :
++    (R1 R).w b = s1.get b := by
++  show (R1 R).w b = (Sizes.ofFun w0).get b
++  rw [Sizes.get_ofFun, ← h b]
++  simp [R1]
++
++/-- The base realisation reindexed by `sigma`, in the same graph. -/
++def Rf (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 1) :=
++  (R1 R).reindex Letter.sigma Letter.sigma_sep
++
++lemma wf (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (b : Letter) :
++    (Rf R).w b = sf.get b := by
++  show (Rf R).w b = (Sizes.ofFun w0f).get b
++  rw [Sizes.get_ofFun, Rf, Realisation.w_reindex, w1 R h]
++  show (Sizes.ofFun w0).get _ = _
++  rw [Sizes.get_ofFun]
++  cases b <;> rfl
++
++/-! ### Node `n0` = `S3f(R1, R1, R1)`, exponent `3` -/
++
++/-- The child exponents of node `n0`. -/
++def en0 : Fin 3 → Nat := Fin.cases 1 (Fin.cases 1 (fun _ => 1))
++
++/-- The children of node `n0`. -/
++def chn0 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en0 i)) :=
++  Fin.cases (R1 R) (Fin.cases (R1 R) (fun _ => (R1 R)))
++
++/-- Node `n0`. -/
++def Rn0 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 3) :=
++  Realisation.multiSubst en0 (chn0 R) Substitutions.S3f
++
++/-- The sizes at node `n0`. -/
++def sn0 : Sizes := node3 Substitutions.S3f s1 s1 s1
++
++/-- Node `n0` has the sizes `sn0`. -/
++lemma wn0 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn0 R).w a = sn0.get a :=
++  w_node3 Substitutions.S3f (chn0 R) s1 s1 s1
++    (fun b => w1 R h b) (fun b => w1 R h b) (fun b => w1 R h b) a
++
++/-! ### Node `n1` = `S3e(R1, R1, R1)`, exponent `3` -/
++
++/-- The child exponents of node `n1`. -/
++def en1 : Fin 3 → Nat := Fin.cases 1 (Fin.cases 1 (fun _ => 1))
++
++/-- The children of node `n1`. -/
++def chn1 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en1 i)) :=
++  Fin.cases (R1 R) (Fin.cases (R1 R) (fun _ => (R1 R)))
++
++/-- Node `n1`. -/
++def Rn1 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 3) :=
++  Realisation.multiSubst en1 (chn1 R) Substitutions.S3e
++
++/-- The sizes at node `n1`. -/
++def sn1 : Sizes := node3 Substitutions.S3e s1 s1 s1
++
++/-- Node `n1` has the sizes `sn1`. -/
++lemma wn1 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn1 R).w a = sn1.get a :=
++  w_node3 Substitutions.S3e (chn1 R) s1 s1 s1
++    (fun b => w1 R h b) (fun b => w1 R h b) (fun b => w1 R h b) a
++
++/-! ### Node `n2` = `S3f(n0, n1, n0)`, exponent `9` -/
++
++/-- The child exponents of node `n2`. -/
++def en2 : Fin 3 → Nat := Fin.cases 3 (Fin.cases 3 (fun _ => 3))
++
++/-- The children of node `n2`. -/
++def chn2 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en2 i)) :=
++  Fin.cases (Rn0 R) (Fin.cases (Rn1 R) (fun _ => (Rn0 R)))
++
++/-- Node `n2`. -/
++def Rn2 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 9) :=
++  Realisation.multiSubst en2 (chn2 R) Substitutions.S3f
++
++/-- The sizes at node `n2`. -/
++def sn2 : Sizes := node3 Substitutions.S3f sn0 sn1 sn0
++
++/-- Node `n2` has the sizes `sn2`. -/
++lemma wn2 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn2 R).w a = sn2.get a :=
++  w_node3 Substitutions.S3f (chn2 R) sn0 sn1 sn0
++    (fun b => wn0 R h b) (fun b => wn1 R h b) (fun b => wn0 R h b) a
++
++/-! ### Node `n3` = `S3f(n0, n0, n0)`, exponent `9` -/
++
++/-- The child exponents of node `n3`. -/
++def en3 : Fin 3 → Nat := Fin.cases 3 (Fin.cases 3 (fun _ => 3))
++
++/-- The children of node `n3`. -/
++def chn3 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en3 i)) :=
++  Fin.cases (Rn0 R) (Fin.cases (Rn0 R) (fun _ => (Rn0 R)))
++
++/-- Node `n3`. -/
++def Rn3 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 9) :=
++  Realisation.multiSubst en3 (chn3 R) Substitutions.S3f
++
++/-- The sizes at node `n3`. -/
++def sn3 : Sizes := node3 Substitutions.S3f sn0 sn0 sn0
++
++/-- Node `n3` has the sizes `sn3`. -/
++lemma wn3 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn3 R).w a = sn3.get a :=
++  w_node3 Substitutions.S3f (chn3 R) sn0 sn0 sn0
++    (fun b => wn0 R h b) (fun b => wn0 R h b) (fun b => wn0 R h b) a
++
++/-! ### Node `n4` = `S3f(n2, n3, n3)`, exponent `27` -/
++
++/-- The child exponents of node `n4`. -/
++def en4 : Fin 3 → Nat := Fin.cases 9 (Fin.cases 9 (fun _ => 9))
++
++/-- The children of node `n4`. -/
++def chn4 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en4 i)) :=
++  Fin.cases (Rn2 R) (Fin.cases (Rn3 R) (fun _ => (Rn3 R)))
++
++/-- Node `n4`. -/
++def Rn4 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 27) :=
++  Realisation.multiSubst en4 (chn4 R) Substitutions.S3f
++
++/-- The sizes at node `n4`. -/
++def sn4 : Sizes := node3 Substitutions.S3f sn2 sn3 sn3
++
++/-- Node `n4` has the sizes `sn4`. -/
++lemma wn4 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn4 R).w a = sn4.get a :=
++  w_node3 Substitutions.S3f (chn4 R) sn2 sn3 sn3
++    (fun b => wn2 R h b) (fun b => wn3 R h b) (fun b => wn3 R h b) a
++
++/-! ### Node `n5` = `S3g(n4, R1, n4)`, exponent `55` -/
++
++/-- The child exponents of node `n5`. -/
++def en5 : Fin 3 → Nat := Fin.cases 27 (Fin.cases 1 (fun _ => 27))
++
++/-- The children of node `n5`. -/
++def chn5 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en5 i)) :=
++  Fin.cases (Rn4 R) (Fin.cases (R1 R) (fun _ => (Rn4 R)))
++
++/-- Node `n5`. -/
++def Rn5 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 55) :=
++  Realisation.multiSubst en5 (chn5 R) Substitutions.S3g
++
++/-- The sizes at node `n5`. -/
++def sn5 : Sizes := node3 Substitutions.S3g sn4 s1 sn4
++
++/-- Node `n5` has the sizes `sn5`. -/
++lemma wn5 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn5 R).w a = sn5.get a :=
++  w_node3 Substitutions.S3g (chn5 R) sn4 s1 sn4
++    (fun b => wn4 R h b) (fun b => w1 R h b) (fun b => wn4 R h b) a
++
++/-! ### Node `n6` = `S2a(R1, Rf)`, exponent `2` -/
++
++/-- The child exponents of node `n6`. -/
++def en6 : Fin 2 → Nat := Fin.cases 1 (fun _ => 1)
++
++/-- The children of node `n6`. -/
++def chn6 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 2) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en6 i)) :=
++  Fin.cases (R1 R) (fun _ => (Rf R))
++
++/-- Node `n6`. -/
++def Rn6 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 2) :=
++  Realisation.multiSubst en6 (chn6 R) Substitutions.S2a
++
++/-- The sizes at node `n6`. -/
++def sn6 : Sizes := node2 Substitutions.S2a s1 sf
++
++/-- Node `n6` has the sizes `sn6`. -/
++lemma wn6 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn6 R).w a = sn6.get a :=
++  w_node2 Substitutions.S2a (chn6 R) s1 sf
++    (fun b => w1 R h b) (fun b => wf R h b) a
++
++/-! ### Node `n7` = `S3f(n3, R1, n3)`, exponent `19` -/
++
++/-- The child exponents of node `n7`. -/
++def en7 : Fin 3 → Nat := Fin.cases 9 (Fin.cases 1 (fun _ => 9))
++
++/-- The children of node `n7`. -/
++def chn7 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en7 i)) :=
++  Fin.cases (Rn3 R) (Fin.cases (R1 R) (fun _ => (Rn3 R)))
++
++/-- Node `n7`. -/
++def Rn7 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 19) :=
++  Realisation.multiSubst en7 (chn7 R) Substitutions.S3f
++
++/-- The sizes at node `n7`. -/
++def sn7 : Sizes := node3 Substitutions.S3f sn3 s1 sn3
++
++/-- Node `n7` has the sizes `sn7`. -/
++lemma wn7 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn7 R).w a = sn7.get a :=
++  w_node3 Substitutions.S3f (chn7 R) sn3 s1 sn3
++    (fun b => wn3 R h b) (fun b => w1 R h b) (fun b => wn3 R h b) a
++
++/-! ### Node `n8` = `S3g(n5, n6, n7)`, exponent `76` -/
++
++/-- The child exponents of node `n8`. -/
++def en8 : Fin 3 → Nat := Fin.cases 55 (Fin.cases 2 (fun _ => 19))
++
++/-- The children of node `n8`. -/
++def chn8 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en8 i)) :=
++  Fin.cases (Rn5 R) (Fin.cases (Rn6 R) (fun _ => (Rn7 R)))
++
++/-- Node `n8`. -/
++def Rn8 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 76) :=
++  Realisation.multiSubst en8 (chn8 R) Substitutions.S3g
++
++/-- The sizes at node `n8`. -/
++def sn8 : Sizes := node3 Substitutions.S3g sn5 sn6 sn7
++
++/-- Node `n8` has the sizes `sn8`. -/
++lemma wn8 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn8 R).w a = sn8.get a :=
++  w_node3 Substitutions.S3g (chn8 R) sn5 sn6 sn7
++    (fun b => wn5 R h b) (fun b => wn6 R h b) (fun b => wn7 R h b) a
++
++/-! ### Tail node `n9` = `63 x [y <- S3g(y, R1, R1)]` from `y = n5`, exponent `181` -/
++
++/-- Tail node `n9`. -/
++def Rn9 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 181) :=
++  castR (by norm_num) (tailIter Substitutions.S3g (Rn5 R) (R1 R) (R1 R) 63)
++
++/-- The sizes at tail node `n9`. -/
++def sn9 : Sizes := tailW Substitutions.S3g sn5 s1 s1 63
++
++/-- Tail node `n9` has the sizes `sn9` (by the tail induction `w_tailIter`). -/
++lemma wn9 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn9 R).w a = sn9.get a :=
++  (w_castR _ _ a).trans
++    (w_tailIter Substitutions.S3g (Rn5 R) (R1 R) (R1 R) sn5 s1 s1
++      (fun b => wn5 R h b) (fun b => w1 R h b) (fun b => w1 R h b) 63 a)
++
++/-! ### Node `n10` = `S3g(n5, R1, n9)`, exponent `237` -/
++
++/-- The child exponents of node `n10`. -/
++def en10 : Fin 3 → Nat := Fin.cases 55 (Fin.cases 1 (fun _ => 181))
++
++/-- The children of node `n10`. -/
++def chn10 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en10 i)) :=
++  Fin.cases (Rn5 R) (Fin.cases (R1 R) (fun _ => (Rn9 R)))
++
++/-- Node `n10`. -/
++def Rn10 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 237) :=
++  Realisation.multiSubst en10 (chn10 R) Substitutions.S3g
++
++/-- The sizes at node `n10`. -/
++def sn10 : Sizes := node3 Substitutions.S3g sn5 s1 sn9
++
++/-- Node `n10` has the sizes `sn10`. -/
++lemma wn10 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn10 R).w a = sn10.get a :=
++  w_node3 Substitutions.S3g (chn10 R) sn5 s1 sn9
++    (fun b => wn5 R h b) (fun b => w1 R h b) (fun b => wn9 R h b) a
++
++/-! ### Node `n11` = `S3g(n8, R1, n10)`, exponent `314` -/
++
++/-- The child exponents of node `n11`. -/
++def en11 : Fin 3 → Nat := Fin.cases 76 (Fin.cases 1 (fun _ => 237))
++
++/-- The children of node `n11`. -/
++def chn11 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en11 i)) :=
++  Fin.cases (Rn8 R) (Fin.cases (R1 R) (fun _ => (Rn10 R)))
++
++/-- Node `n11`. -/
++def Rn11 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 314) :=
++  Realisation.multiSubst en11 (chn11 R) Substitutions.S3g
++
++/-- The sizes at node `n11`. -/
++def sn11 : Sizes := node3 Substitutions.S3g sn8 s1 sn10
++
++/-- Node `n11` has the sizes `sn11`. -/
++lemma wn11 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn11 R).w a = sn11.get a :=
++  w_node3 Substitutions.S3g (chn11 R) sn8 s1 sn10
++    (fun b => wn8 R h b) (fun b => w1 R h b) (fun b => wn10 R h b) a
++
++/-! ### Tail node `n12` = `3 x [y <- S3g(y, R1, R1)]` from `y = n5`, exponent `61` -/
++
++/-- Tail node `n12`. -/
++def Rn12 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 61) :=
++  castR (by norm_num) (tailIter Substitutions.S3g (Rn5 R) (R1 R) (R1 R) 3)
++
++/-- The sizes at tail node `n12`. -/
++def sn12 : Sizes := tailW Substitutions.S3g sn5 s1 s1 3
++
++/-- Tail node `n12` has the sizes `sn12` (by the tail induction `w_tailIter`). -/
++lemma wn12 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn12 R).w a = sn12.get a :=
++  (w_castR _ _ a).trans
++    (w_tailIter Substitutions.S3g (Rn5 R) (R1 R) (R1 R) sn5 s1 s1
++      (fun b => wn5 R h b) (fun b => w1 R h b) (fun b => w1 R h b) 3 a)
++
++/-! ### Node `n13` = `S3g(n5, R1, n12)`, exponent `117` -/
++
++/-- The child exponents of node `n13`. -/
++def en13 : Fin 3 → Nat := Fin.cases 55 (Fin.cases 1 (fun _ => 61))
++
++/-- The children of node `n13`. -/
++def chn13 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en13 i)) :=
++  Fin.cases (Rn5 R) (Fin.cases (R1 R) (fun _ => (Rn12 R)))
++
++/-- Node `n13`. -/
++def Rn13 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 117) :=
++  Realisation.multiSubst en13 (chn13 R) Substitutions.S3g
++
++/-- The sizes at node `n13`. -/
++def sn13 : Sizes := node3 Substitutions.S3g sn5 s1 sn12
++
++/-- Node `n13` has the sizes `sn13`. -/
++lemma wn13 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn13 R).w a = sn13.get a :=
++  w_node3 Substitutions.S3g (chn13 R) sn5 s1 sn12
++    (fun b => wn5 R h b) (fun b => w1 R h b) (fun b => wn12 R h b) a
++
++/-! ### Tail node `n14` = `5 x [y <- S3g(y, R1, R1)]` from `y = n13`, exponent `127` -/
++
++/-- Tail node `n14`. -/
++def Rn14 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 127) :=
++  castR (by norm_num) (tailIter Substitutions.S3g (Rn13 R) (R1 R) (R1 R) 5)
++
++/-- The sizes at tail node `n14`. -/
++def sn14 : Sizes := tailW Substitutions.S3g sn13 s1 s1 5
++
++/-- Tail node `n14` has the sizes `sn14` (by the tail induction `w_tailIter`). -/
++lemma wn14 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn14 R).w a = sn14.get a :=
++  (w_castR _ _ a).trans
++    (w_tailIter Substitutions.S3g (Rn13 R) (R1 R) (R1 R) sn13 s1 s1
++      (fun b => wn13 R h b) (fun b => w1 R h b) (fun b => w1 R h b) 5 a)
++
++/-! ### Node `n15` = `S3g(n14, n7, R1)`, exponent `147` -/
++
++/-- The child exponents of node `n15`. -/
++def en15 : Fin 3 → Nat := Fin.cases 127 (Fin.cases 19 (fun _ => 1))
++
++/-- The children of node `n15`. -/
++def chn15 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en15 i)) :=
++  Fin.cases (Rn14 R) (Fin.cases (Rn7 R) (fun _ => (R1 R)))
++
++/-- Node `n15`. -/
++def Rn15 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 147) :=
++  Realisation.multiSubst en15 (chn15 R) Substitutions.S3g
++
++/-- The sizes at node `n15`. -/
++def sn15 : Sizes := node3 Substitutions.S3g sn14 sn7 s1
++
++/-- Node `n15` has the sizes `sn15`. -/
++lemma wn15 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn15 R).w a = sn15.get a :=
++  w_node3 Substitutions.S3g (chn15 R) sn14 sn7 s1
++    (fun b => wn14 R h b) (fun b => wn7 R h b) (fun b => w1 R h b) a
++
++/-! ### Tail node `n16` = `19 x [y <- S3g(y, R1, R1)]` from `y = n5`, exponent `93` -/
++
++/-- Tail node `n16`. -/
++def Rn16 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 93) :=
++  castR (by norm_num) (tailIter Substitutions.S3g (Rn5 R) (R1 R) (R1 R) 19)
++
++/-- The sizes at tail node `n16`. -/
++def sn16 : Sizes := tailW Substitutions.S3g sn5 s1 s1 19
++
++/-- Tail node `n16` has the sizes `sn16` (by the tail induction `w_tailIter`). -/
++lemma wn16 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn16 R).w a = sn16.get a :=
++  (w_castR _ _ a).trans
++    (w_tailIter Substitutions.S3g (Rn5 R) (R1 R) (R1 R) sn5 s1 s1
++      (fun b => wn5 R h b) (fun b => w1 R h b) (fun b => w1 R h b) 19 a)
++
++/-! ### Node `n17` = `S3g(n5, R1, n16)`, exponent `149` -/
++
++/-- The child exponents of node `n17`. -/
++def en17 : Fin 3 → Nat := Fin.cases 55 (Fin.cases 1 (fun _ => 93))
++
++/-- The children of node `n17`. -/
++def chn17 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en17 i)) :=
++  Fin.cases (Rn5 R) (Fin.cases (R1 R) (fun _ => (Rn16 R)))
++
++/-- Node `n17`. -/
++def Rn17 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 149) :=
++  Realisation.multiSubst en17 (chn17 R) Substitutions.S3g
++
++/-- The sizes at node `n17`. -/
++def sn17 : Sizes := node3 Substitutions.S3g sn5 s1 sn16
++
++/-- Node `n17` has the sizes `sn17`. -/
++lemma wn17 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn17 R).w a = sn17.get a :=
++  w_node3 Substitutions.S3g (chn17 R) sn5 s1 sn16
++    (fun b => wn5 R h b) (fun b => w1 R h b) (fun b => wn16 R h b) a
++
++/-! ### Node `n18` = `S3g(n17, n7, R1)`, exponent `169` -/
++
++/-- The child exponents of node `n18`. -/
++def en18 : Fin 3 → Nat := Fin.cases 149 (Fin.cases 19 (fun _ => 1))
++
++/-- The children of node `n18`. -/
++def chn18 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en18 i)) :=
++  Fin.cases (Rn17 R) (Fin.cases (Rn7 R) (fun _ => (R1 R)))
++
++/-- Node `n18`. -/
++def Rn18 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 169) :=
++  Realisation.multiSubst en18 (chn18 R) Substitutions.S3g
++
++/-- The sizes at node `n18`. -/
++def sn18 : Sizes := node3 Substitutions.S3g sn17 sn7 s1
++
++/-- Node `n18` has the sizes `sn18`. -/
++lemma wn18 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn18 R).w a = sn18.get a :=
++  w_node3 Substitutions.S3g (chn18 R) sn17 sn7 s1
++    (fun b => wn17 R h b) (fun b => wn7 R h b) (fun b => w1 R h b) a
++
++/-! ### Node `n19` = `S3g(n8, R1, n17)`, exponent `226` -/
++
++/-- The child exponents of node `n19`. -/
++def en19 : Fin 3 → Nat := Fin.cases 76 (Fin.cases 1 (fun _ => 149))
++
++/-- The children of node `n19`. -/
++def chn19 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en19 i)) :=
++  Fin.cases (Rn8 R) (Fin.cases (R1 R) (fun _ => (Rn17 R)))
++
++/-- Node `n19`. -/
++def Rn19 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 226) :=
++  Realisation.multiSubst en19 (chn19 R) Substitutions.S3g
++
++/-- The sizes at node `n19`. -/
++def sn19 : Sizes := node3 Substitutions.S3g sn8 s1 sn17
++
++/-- Node `n19` has the sizes `sn19`. -/
++lemma wn19 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn19 R).w a = sn19.get a :=
++  w_node3 Substitutions.S3g (chn19 R) sn8 s1 sn17
++    (fun b => wn8 R h b) (fun b => w1 R h b) (fun b => wn17 R h b) a
++
++/-! ### The bound -/
++
++/-- `M` is the size of the terminal code on the four terminal nodes. -/
++theorem stepM : M = code4 K sn11 sn15 sn18 sn19 := by
++  native_decide
++
++/-- The exponents of the 4 terminal children. -/
++def eT : Fin 4 → Nat := Fin.cases 314 (Fin.cases 147 (Fin.cases 169 (fun _ => 226)))
++
++/-- The terminal children. -/
++def terminalChildren (R : Realisation Letter Letter.sep G) :
++    (i : Fin 4) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (eT i)) :=
++  Fin.cases (Rn11 R) (Fin.cases (Rn15 R) (Fin.cases (Rn18 R) (fun _ => (Rn19 R))))
++
++/-- **The bound.**  A port system whose seven families have the sizes of `w0` gives an
++independent set of size `M` in `G^(box 856)`. -/
++theorem bound (S : RichPortSystem G) (hw : ∀ a, (S.fam a).card = w0 a) :
++    M ≤ (SimpleGraph.strongPower G 856).indepNum := by
++  have h : ∀ a, S.toRealisation.w a = w0 a := hw
++  have hc := sum_code4 K (terminalChildren S.toRealisation) sn11 sn15 sn18 sn19
++    (fun b => wn11 S.toRealisation h b) (fun b => wn15 S.toRealisation h b) (fun b => wn18 S.toRealisation h b) (fun b => wn19 S.toRealisation h b)
++  exact le_trans (le_of_eq (stepM.trans hc.symm))
++    (le_indepNum_multiCode eT (terminalChildren S.toRealisation) K)
++
++end CertC15b
++end ShannonBounds
+diff -ruN a/ShannonBounds/CertC19c.lean b/ShannonBounds/CertC19c.lean
+--- a/ShannonBounds/CertC19c.lean	1969-12-31 19:00:00
++++ b/ShannonBounds/CertC19c.lean	2026-10-01 07:16:24
+@@ -0,0 +1,692 @@
++/-
++Contributed in 2026 by Griffin Long, with the AI agent agent-afk, as an addition to the
++ShannonBounds framework of Pjotr Buys, Sven Polak and Jeroen Zuiddam (who did not write this
++file). Released under Apache 2.0 license as described in the file LICENSE.
++(This file: generated by lanes/L2_lean/gen_dag.py from best_C19_C_ref.json; a DAG schedule
++in the framework of `CertC19.lean`, with the same base.)
++-/
++import ShannonBounds.PortRealisation
++import ShannonBounds.Layered
++import ShannonBounds.Reindex
++import ShannonBounds.Substitutions
++import ShannonBounds.TerminalCodes
++import ShannonBounds.DagTail
++
++set_option maxRecDepth 4000000
++set_option maxHeartbeats 0
++set_option synthInstance.maxSize 4000
++set_option exponentiation.threshold 20000
++
++/-!
++# `Theta (C19) >= 9.357203012726939`, a DAG schedule with several tails
++
++The same `C19^(box 4)` base as `CertC19`.  26 distinct nodes (shared sub-schedules are
++defined once), 8 of them iterated tails `y ↦ S (y, z1, z2)` written with `DagTail.tailIter`
++and sized by the induction `DagTail.w_tailIter`.  The terminal code `K` is applied to nodes of
++exponents `(1245, 713, 793, 949)`, so `E = 3700`, hence `C19^(box 14800)`.
++
++Node sizes are not literals: each node carries a `Sizes` value computed from its children's
++(`node2`, `node3`, `tailW`); `stepM` checks the one literal `M` by `native_decide`.
++
++Schedule (`t = J x [y <- S(y, z1, z2)]` from `y = start`):
++    n0 = S3f(R1, R1, R1)
++    n1 = S3f(n0, n0, n0)
++    n2 = S3f(n1, n1, n1)
++    n3 = S3f(n2, n2, n2)
++    n4 = S3a(n3, n2, R1)
++    n5 = 265 x [y <- S3g(y, R1, R1)] from y = n4
++    n6 = S3e(n3, n2, R1)
++    n7 = 193 x [y <- S3g(y, R1, R1)] from y = n6
++    n8 = S3g(n5, R1, n7)
++    n9 = S3g(n8, R1, n3)
++    n10 = S3g(n9, R1, n2)
++    n11 = 153 x [y <- S3g(y, R1, R1)] from y = n4
++    n12 = 52 x [y <- S3g(y, R1, R1)] from y = n6
++    n13 = S3g(n11, R1, n12)
++    n14 = S3g(n13, R1, n3)
++    n15 = S3g(n14, R1, R1)
++    n16 = 177 x [y <- S3g(y, R1, R1)] from y = n4
++    n17 = 68 x [y <- S3g(y, R1, R1)] from y = n6
++    n18 = S3g(n16, R1, n17)
++    n19 = S3g(n18, R1, n3)
++    n20 = S3g(n19, R1, R1)
++    n21 = 230 x [y <- S3g(y, R1, R1)] from y = n4
++    n22 = 80 x [y <- S3g(y, R1, R1)] from y = n6
++    n23 = S3g(n21, R1, n22)
++    n24 = S3g(n23, R1, n3)
++    n25 = S3g(n24, R1, n2)
++    M = K4b(n10, n15, n20, n25)
++-/
++namespace ShannonBounds
++namespace CertC19c
++
++open SimpleGraph DagTail
++
++/-- The terminal code. -/
++abbrev K : Code Letter Letter.sep 4 := TerminalCodes.K4b
++
++/-- The size of each of the seven families of the base port system. -/
++def w0 : Letter → Nat
++  | .B => 7664
++  | .N => 7661
++  | .A => 3
++  | .D => 2
++  | .O => 2
++  | .H => 2
++  | .V => 2
++
++/-- The size of the independent set the construction produces. -/
++def M : Nat :=
++  915312272464217028210920309204493408611396312794833714636080930557799175126178542314052557042537932251630038359760747207940507246601085978143778706708610677210034642862228233379140764559594070413592980987587916037107367368298496179239208714033297062594358987359308877351823830841174600250440704763278274651465436173617692480673458809797724897703385389804783296256384805179410191707822058372389062788019634992603050338796544400830850391048525134643108038856049280578635982270781437894056230157922671241910209495146372630842005198736688160306565248251869130449610517284129951312492671038255230704659841482359537422343105751214360482112426060791260563213514028526785989754137112376505800666982537330803673380285847386587920426189549612922053692927692452149136795598020565113674836030236801846098910026599408681695335297306810424042914144485666043161806764066040018597229090697592738548220132455376570071043656048484851823774834305412095433677566067510816520046857028883650177719008704963041939799579955191706427470917982098861589189437624774740744154551846044263372084608282980955011171795031328590935906235196920969938544705333101819356653816871484380851193657718796126263423420106564668452391155708881402048059108269608361200823960334072805953714985423294007115572883114233899057861361431771100032107285748378363496001055656257773450785231723807186168453012324948682534662047660782923128923610442540862017784454307574662683948411066161600832854392173006964028076438820727386838455630312369028311349948661317011660389972057105019011038823283925506762263841460330077618182210006259107608246478273437249186704948436969361021714740685057822457147687578336521398377939795530044817583989596915817986234333649994370803488202126038341550037592976567937031479767912960970689920305037847060698827784243733306572584113601194486490145425688395765050965706518635095591568130644688905335244632665796821163028319553596063908073016244258856522703050577356867370775868162935292635893470267862340743810573724198771078264615409145909343336267635615280753450905315430066878668017514069782775671901131608904777446318995658072626577220544635468415117205578591431775689887320719570249963563391439119888500675139412032733843162128805513844314724946605194557319685493558890092258317214990266762726283996852684575607404238051898602857227046642110725578704347881502750225986802420552337977286866613841832673710091544406693210502207188917582582806307221780166251528936722105303768133351497327089138198144692661544935324845169016699798228761290786543172159347548206243559097192483014217995152655502579495807761888448839919441529852475978311918439051376456804785929834769498159019701583320643431537517515944522595325984378902985456951756642396266499278867876068916945248338943991789286906897171820614711282184216977360953021171571787983947349336970860865838163006623040271002820381543436261842559198461789101033497502189607205951763224790621781496198934466276555894341307361580394013866655886676501421176254289607732435633550801922947416461064322542411338280215244454998524722517229287122725360611311857453607063577364762134890542346199196321234299673185379539033158839610645486485636076324413129112674374033218201705660423137592912079970217512730077342091274730687747271782377591870513817291565918168977560157491391046645899326048383421716796822751596112699941578074012239702290584950576272533371137779114034667675483575928712634031798621137103516823183886298664822182153541044397961716574321655180840925488889916755678588735244666819316902067628426616147212162066642958685445345559448878888779712789108453341859388453397453370902137902416847050146916287858163016263912760295198376453987522391469135022421446088663457294297416049625336301431529807164020999898421699573776376725699807105636850809256115364644650200903592320269545252176827117118336768763907742419545615269791507638535731954149090581434834123877793896085473705802453825705599981936693187599896636273781041287970000208029738639468225012975766558189620709649045014532770665993672073760257065891667547444677507124412196009070888718505787237935126697698372854326724643919208937205376254321336488265439077451149851745443420956256519393091962634881124539980497144052221708543655994816494988595513959751155622496643568716790294693547167576128783736045473871101563552995836326909579151298389799924882706517087885785669883121113762096466296988700629954103766904653261262471082464896791938445910272341165328741610511749844247554551711593205451267108595514071346001173059017297908010088378564156164313347312421110887860056154846848838238087856483705699385218711595079783109323322629898460547765040511096768096738966915635140946222733269874712894834364662858567378350233024520329417300650892619728346046020626260544481461746469396212818337308370410133039602162958068749092467841964424000948978161739082941212681443636919794828167978032474996720366713734047240097879465742488048524858291883722151616451463478368451025263582381496384491440569088069098121851477625958687226963698137536767986910184038904314419307742400295696267815862118234746318679117383902204188256137246838575735687790126042894320450164775233250707407557668745158194187142061602557964376453611552016077024882475026813952629735688586683293855498522951099782063639586420223633408623196274502527736283856599677620898700266772766433458050922487814669250077795432197402177516578966183189507798490892043273268101301463260580109752154162465879847833800298759321717326131487423933506630027561729309071472529462164942620667047136265487425821800004758207890831999189968017113728324407800978495934199225846937584944950421030573216744160518889633327209113311253667063238971181718439314734498847616553174485929400168930356501602180640910025293739037660202374599905308786030184366433095518213496048383425480754226348713110548141219261925288764924290884629349548205242238783540596908079124170197136802086759159930734871393740682548551581656991175933394723175162716484194128187269269323848552894588844030740407209255931298012170788695074182231905414982925919591684872782111396648215435362257911922580660406618485163677349635089767232994452091196806233118827054667139767373034766033818552401134202835893532005304654967255091436611244323561048791240669888352191042715123742202705625465655270682099956214037621593800080786763324242149766997409943308717894131884411847619895539796762638428210300471396855267391240274516297104586427189346266997855865170933779055500929685861402780136981492308736005866065037468439139894290563875410329285403711157939627705789605498731864536841005455574036069721730456415334281566829122723661472258072230006708710453539013166735470098128974363822469756757316278484625330570397259362631396646751287808737400136911447425223264418982486776674930852802101218038363944637058812458370288948790531909381763226025152522745637836619545253881350437299219465707252412498426306549442649707348068986863309464547406052892996541783614854150086920473168175052799840745968967295635847152750894258333635061933596112121740727924615297376839165430291091222090173214836151734404775034020221522829528471910186208690924719301282516212427941852163205992307987414690148184251508267104409443091170247717083473889214413281570654292586673587982883888196033490764106679590629493008578710109400479904337475697633360260258260235551196251447202445525821296845951555107797090866245362211345938000840494077928249848319583259085968313365456986280284556433568364384506856913889929438253791152469071772375502546833804577529587434963039031300028756482793249071203188719786921541169696145985888658561513265015145100566051245212401681802416366465320512338751985987194872272494002971136241474622515045422558121716080610609434494032446992388930111083262427051077445005466727258158530265611838755137193246493586460079183731387906803206568808003035622694148036530595518100748864442321335883458898278472938881974710276269411360463063277024112793945596389028394419600103164588259904376995542644739889972495665281664336840619348326484659393965258168036717301289583430305029450120858845092283284601012659291596509522856740559046656261359072889002080865032427645662308463311103722696669935036067256378482980078921662999362988666784076302994070822271820097005714707452744628013099769776928679116533271710662663861587937790383976701661131202390278780723375958150657138020867624003056145802552615641440630720076401005718962330657257058488656331353367633238669611205723685603440233312759336768481054630787988111552723289468365042986773958596821069015886161716071088762748853224208412644134213459907291206172238990705757374966863404098052742725654588399424778412785070599553880468960485554823961492862468976330097043518587892763962710261830325336793777811764993014564711290736259455507323826541191887202791308836687097649927839241114895935950346913874651318508532662280985333806743176307069780492369023929215591761355569314210217182907883438293296606303331245079525307202239694891326199015828004439604669060052955359447594636922081071136100028250665425302573477467274890860132149983715292654427799801666056393575633117368632660429026055245105572751882794554255260898263315387866530728733412746351844207593129180382696137631869450392762209904680272060984614083927338803755653736931832008080986303830326834740358520382463828147473741176671526948237422060535509099887359272854065667130640374881355151684456048617432534409063808161433747672698773556061676670648601988615465045032824728306403112627492185789407162786200344134543837779116499161190640669545559171134185002016367026579073584779460534719671608428669219591246525388506117580271440803287150710886950900296257914044767253210389448141869225544281806676420133340115484128978588874234311007403221506274819791563113792508320812682047706838809304759708075104870074075730690599149162053878706149885435161581261172807404764926358751289015302251730531820683637821169108022135785531296258556411959851989290368762441493301751859738121584095661201979951210770344785683935828829989321123441563335966050324952597297344292976598248778554788073443441661976547645857619517341761734800783178541432103999727405270550677214138806221624752979995988142426726369275539683623362611959697191797209633566517799408584366489515305984833391476708921484317548035687462879714222947586814784008072672802502117875335960749784716684318757785364336864000582636907089356015761721098187262304242494693380762975816988510355944533720398692886938506031395938189267543397039402967641695663170078880422342075902690059282129116881792788961440908951184063242310127000570808209359714609385170333645357311663138622160454583237184624753777705797933418028982747512701511383699359336352144890694454074980988938878129063802807788949825397021190094891021063798519933538829539509164362011700333222799888286567679257090359823054830928062878512211699250222966299851213250590490262874174572365316939231992327828748475577636033296590208003253943064804765307195629785221496102972733576131292567403826607495218179637112779407017326966653857039217373678409541077715696288281611210910665150972484417869629236825050327363669659481505753063893740797560265655501346754516208832908707494127539422874123222556159812999688919081162119213111656070724922459737433049037685410569660142829358146632497485834179134803852060760996689017772272134326804089497827032137972080603117546424884031453915874388682795939648516915166600204346531324410693742134870930816802581624501758989149658227939643385549505548612841269830717354432070758125243395741684566251663724837781041951017182496803663052710754268777176121736709388962738135660916155094248727747516812781453265136212761849899530448375807039123898186214270878630488006086873624751805287000630482126632503395272276828236053836129196040855673298571638249995082597225212193902590023337570894798714115445518080589718080300937462491841508251717901135387554968160812640049587888002086053108991698161347550486438876116799259784737425522482375628721433299264752799686665204750131855279377216227250168862869593083713740994342271823067764523947501144673386209706804432910832125469356718570114796500640273288859482436100827882688898557189062024762218247092367132182729081768782841560873294629763881020658923917253886782440500457809053424453725048880638313800386217723203083679839064719415826574542364011265351968660784462814372840032010501976285806175451532072961781701128824784807961861832437430837007002218224569691734601936659419575643972290400598597181734587450932488944410304113194666561478250085799072730117721979956897475313721462406084682755299244021469157329464925214345689397712664538995963694890492475251640779997459855159035856935713421429024983813468699852566886854897053402647757514329998355784752773674596361166553355577683035505043727370359945313120942632138074443551218450785409484847561938307462047265351961593637832565446104946279173669751725358546950202812848682050015149511863486864569743382482844893316721245308028625977709165510602361541690179746805288936461108322185947493144615607178184375594363982083954667497214605294340473980884956683060784366888031421626352004214506795276905819703665713986733439609468637419359025115325682157701496782581189165904908181530179322507336088074771581650969466971903265508141311165371154429411276368950065663802893460078676049339949714163405276974451024098818334227135911081478671952058514247651334655145583915177653595755306242179149132757170604184949490431436543519588789163319714323759108208652637333127158932863583571620215537977540639513319588553700789660657046272712297514568075193830511270017768447390306874204452710854216008889684110262319568751663760070358386329718099408229807243459338205933490204054452680493130859860024186929862212444796574925809606288589219452745233730666216717981554407391190428539666340786703286993002874626900233152419745257227180498568103382994422811682689070870842743453259481859598000041660052665015624110954966096772121763119912365440828664537424040434938273801821691856265487670816187611990946652518378592913111673435736013171523838276062548681148560274185890973532689291507567281256543983687500675443135534185456087018036397371280706774909602524963779914053529479601703290999834065443927800009138041715426397792304295235125086967582304755507592361197460747487194579413602229012423416193348795708987999632080659138463965525130421964214656935289258889464055329893121351419984540085579079731735690099930718797824
++
++/-- Sizes of the base. -/
++def s1 : Sizes := Sizes.ofFun w0
++
++variable {α : Type*} [Fintype α] [DecidableEq α]
++  {G : SimpleGraph α} [DecidableRel G.Adj]
++
++/-- The base realisation, seen in the first strong power. -/
++def R1 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 1) :=
++  R.mapIso (strongPower_one_iso G).symm
++
++lemma w1 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (b : Letter) :
++    (R1 R).w b = s1.get b := by
++  show (R1 R).w b = (Sizes.ofFun w0).get b
++  rw [Sizes.get_ofFun, ← h b]
++  simp [R1]
++
++/-! ### Node `n0` = `S3f(R1, R1, R1)`, exponent `3` -/
++
++/-- The child exponents of node `n0`. -/
++def en0 : Fin 3 → Nat := Fin.cases 1 (Fin.cases 1 (fun _ => 1))
++
++/-- The children of node `n0`. -/
++def chn0 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en0 i)) :=
++  Fin.cases (R1 R) (Fin.cases (R1 R) (fun _ => (R1 R)))
++
++/-- Node `n0`. -/
++def Rn0 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 3) :=
++  Realisation.multiSubst en0 (chn0 R) Substitutions.S3f
++
++/-- The sizes at node `n0`. -/
++def sn0 : Sizes := node3 Substitutions.S3f s1 s1 s1
++
++/-- Node `n0` has the sizes `sn0`. -/
++lemma wn0 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn0 R).w a = sn0.get a :=
++  w_node3 Substitutions.S3f (chn0 R) s1 s1 s1
++    (fun b => w1 R h b) (fun b => w1 R h b) (fun b => w1 R h b) a
++
++/-! ### Node `n1` = `S3f(n0, n0, n0)`, exponent `9` -/
++
++/-- The child exponents of node `n1`. -/
++def en1 : Fin 3 → Nat := Fin.cases 3 (Fin.cases 3 (fun _ => 3))
++
++/-- The children of node `n1`. -/
++def chn1 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en1 i)) :=
++  Fin.cases (Rn0 R) (Fin.cases (Rn0 R) (fun _ => (Rn0 R)))
++
++/-- Node `n1`. -/
++def Rn1 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 9) :=
++  Realisation.multiSubst en1 (chn1 R) Substitutions.S3f
++
++/-- The sizes at node `n1`. -/
++def sn1 : Sizes := node3 Substitutions.S3f sn0 sn0 sn0
++
++/-- Node `n1` has the sizes `sn1`. -/
++lemma wn1 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn1 R).w a = sn1.get a :=
++  w_node3 Substitutions.S3f (chn1 R) sn0 sn0 sn0
++    (fun b => wn0 R h b) (fun b => wn0 R h b) (fun b => wn0 R h b) a
++
++/-! ### Node `n2` = `S3f(n1, n1, n1)`, exponent `27` -/
++
++/-- The child exponents of node `n2`. -/
++def en2 : Fin 3 → Nat := Fin.cases 9 (Fin.cases 9 (fun _ => 9))
++
++/-- The children of node `n2`. -/
++def chn2 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en2 i)) :=
++  Fin.cases (Rn1 R) (Fin.cases (Rn1 R) (fun _ => (Rn1 R)))
++
++/-- Node `n2`. -/
++def Rn2 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 27) :=
++  Realisation.multiSubst en2 (chn2 R) Substitutions.S3f
++
++/-- The sizes at node `n2`. -/
++def sn2 : Sizes := node3 Substitutions.S3f sn1 sn1 sn1
++
++/-- Node `n2` has the sizes `sn2`. -/
++lemma wn2 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn2 R).w a = sn2.get a :=
++  w_node3 Substitutions.S3f (chn2 R) sn1 sn1 sn1
++    (fun b => wn1 R h b) (fun b => wn1 R h b) (fun b => wn1 R h b) a
++
++/-! ### Node `n3` = `S3f(n2, n2, n2)`, exponent `81` -/
++
++/-- The child exponents of node `n3`. -/
++def en3 : Fin 3 → Nat := Fin.cases 27 (Fin.cases 27 (fun _ => 27))
++
++/-- The children of node `n3`. -/
++def chn3 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en3 i)) :=
++  Fin.cases (Rn2 R) (Fin.cases (Rn2 R) (fun _ => (Rn2 R)))
++
++/-- Node `n3`. -/
++def Rn3 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 81) :=
++  Realisation.multiSubst en3 (chn3 R) Substitutions.S3f
++
++/-- The sizes at node `n3`. -/
++def sn3 : Sizes := node3 Substitutions.S3f sn2 sn2 sn2
++
++/-- Node `n3` has the sizes `sn3`. -/
++lemma wn3 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn3 R).w a = sn3.get a :=
++  w_node3 Substitutions.S3f (chn3 R) sn2 sn2 sn2
++    (fun b => wn2 R h b) (fun b => wn2 R h b) (fun b => wn2 R h b) a
++
++/-! ### Node `n4` = `S3a(n3, n2, R1)`, exponent `109` -/
++
++/-- The child exponents of node `n4`. -/
++def en4 : Fin 3 → Nat := Fin.cases 81 (Fin.cases 27 (fun _ => 1))
++
++/-- The children of node `n4`. -/
++def chn4 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en4 i)) :=
++  Fin.cases (Rn3 R) (Fin.cases (Rn2 R) (fun _ => (R1 R)))
++
++/-- Node `n4`. -/
++def Rn4 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 109) :=
++  Realisation.multiSubst en4 (chn4 R) Substitutions.S3a
++
++/-- The sizes at node `n4`. -/
++def sn4 : Sizes := node3 Substitutions.S3a sn3 sn2 s1
++
++/-- Node `n4` has the sizes `sn4`. -/
++lemma wn4 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn4 R).w a = sn4.get a :=
++  w_node3 Substitutions.S3a (chn4 R) sn3 sn2 s1
++    (fun b => wn3 R h b) (fun b => wn2 R h b) (fun b => w1 R h b) a
++
++/-! ### Tail node `n5` = `265 x [y <- S3g(y, R1, R1)]` from `y = n4`, exponent `639` -/
++
++/-- Tail node `n5`. -/
++def Rn5 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 639) :=
++  castR (by norm_num) (tailIter Substitutions.S3g (Rn4 R) (R1 R) (R1 R) 265)
++
++/-- The sizes at tail node `n5`. -/
++def sn5 : Sizes := tailW Substitutions.S3g sn4 s1 s1 265
++
++/-- Tail node `n5` has the sizes `sn5` (by the tail induction `w_tailIter`). -/
++lemma wn5 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn5 R).w a = sn5.get a :=
++  (w_castR _ _ a).trans
++    (w_tailIter Substitutions.S3g (Rn4 R) (R1 R) (R1 R) sn4 s1 s1
++      (fun b => wn4 R h b) (fun b => w1 R h b) (fun b => w1 R h b) 265 a)
++
++/-! ### Node `n6` = `S3e(n3, n2, R1)`, exponent `109` -/
++
++/-- The child exponents of node `n6`. -/
++def en6 : Fin 3 → Nat := Fin.cases 81 (Fin.cases 27 (fun _ => 1))
++
++/-- The children of node `n6`. -/
++def chn6 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en6 i)) :=
++  Fin.cases (Rn3 R) (Fin.cases (Rn2 R) (fun _ => (R1 R)))
++
++/-- Node `n6`. -/
++def Rn6 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 109) :=
++  Realisation.multiSubst en6 (chn6 R) Substitutions.S3e
++
++/-- The sizes at node `n6`. -/
++def sn6 : Sizes := node3 Substitutions.S3e sn3 sn2 s1
++
++/-- Node `n6` has the sizes `sn6`. -/
++lemma wn6 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn6 R).w a = sn6.get a :=
++  w_node3 Substitutions.S3e (chn6 R) sn3 sn2 s1
++    (fun b => wn3 R h b) (fun b => wn2 R h b) (fun b => w1 R h b) a
++
++/-! ### Tail node `n7` = `193 x [y <- S3g(y, R1, R1)]` from `y = n6`, exponent `495` -/
++
++/-- Tail node `n7`. -/
++def Rn7 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 495) :=
++  castR (by norm_num) (tailIter Substitutions.S3g (Rn6 R) (R1 R) (R1 R) 193)
++
++/-- The sizes at tail node `n7`. -/
++def sn7 : Sizes := tailW Substitutions.S3g sn6 s1 s1 193
++
++/-- Tail node `n7` has the sizes `sn7` (by the tail induction `w_tailIter`). -/
++lemma wn7 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn7 R).w a = sn7.get a :=
++  (w_castR _ _ a).trans
++    (w_tailIter Substitutions.S3g (Rn6 R) (R1 R) (R1 R) sn6 s1 s1
++      (fun b => wn6 R h b) (fun b => w1 R h b) (fun b => w1 R h b) 193 a)
++
++/-! ### Node `n8` = `S3g(n5, R1, n7)`, exponent `1135` -/
++
++/-- The child exponents of node `n8`. -/
++def en8 : Fin 3 → Nat := Fin.cases 639 (Fin.cases 1 (fun _ => 495))
++
++/-- The children of node `n8`. -/
++def chn8 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en8 i)) :=
++  Fin.cases (Rn5 R) (Fin.cases (R1 R) (fun _ => (Rn7 R)))
++
++/-- Node `n8`. -/
++def Rn8 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 1135) :=
++  Realisation.multiSubst en8 (chn8 R) Substitutions.S3g
++
++/-- The sizes at node `n8`. -/
++def sn8 : Sizes := node3 Substitutions.S3g sn5 s1 sn7
++
++/-- Node `n8` has the sizes `sn8`. -/
++lemma wn8 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn8 R).w a = sn8.get a :=
++  w_node3 Substitutions.S3g (chn8 R) sn5 s1 sn7
++    (fun b => wn5 R h b) (fun b => w1 R h b) (fun b => wn7 R h b) a
++
++/-! ### Node `n9` = `S3g(n8, R1, n3)`, exponent `1217` -/
++
++/-- The child exponents of node `n9`. -/
++def en9 : Fin 3 → Nat := Fin.cases 1135 (Fin.cases 1 (fun _ => 81))
++
++/-- The children of node `n9`. -/
++def chn9 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en9 i)) :=
++  Fin.cases (Rn8 R) (Fin.cases (R1 R) (fun _ => (Rn3 R)))
++
++/-- Node `n9`. -/
++def Rn9 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 1217) :=
++  Realisation.multiSubst en9 (chn9 R) Substitutions.S3g
++
++/-- The sizes at node `n9`. -/
++def sn9 : Sizes := node3 Substitutions.S3g sn8 s1 sn3
++
++/-- Node `n9` has the sizes `sn9`. -/
++lemma wn9 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn9 R).w a = sn9.get a :=
++  w_node3 Substitutions.S3g (chn9 R) sn8 s1 sn3
++    (fun b => wn8 R h b) (fun b => w1 R h b) (fun b => wn3 R h b) a
++
++/-! ### Node `n10` = `S3g(n9, R1, n2)`, exponent `1245` -/
++
++/-- The child exponents of node `n10`. -/
++def en10 : Fin 3 → Nat := Fin.cases 1217 (Fin.cases 1 (fun _ => 27))
++
++/-- The children of node `n10`. -/
++def chn10 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en10 i)) :=
++  Fin.cases (Rn9 R) (Fin.cases (R1 R) (fun _ => (Rn2 R)))
++
++/-- Node `n10`. -/
++def Rn10 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 1245) :=
++  Realisation.multiSubst en10 (chn10 R) Substitutions.S3g
++
++/-- The sizes at node `n10`. -/
++def sn10 : Sizes := node3 Substitutions.S3g sn9 s1 sn2
++
++/-- Node `n10` has the sizes `sn10`. -/
++lemma wn10 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn10 R).w a = sn10.get a :=
++  w_node3 Substitutions.S3g (chn10 R) sn9 s1 sn2
++    (fun b => wn9 R h b) (fun b => w1 R h b) (fun b => wn2 R h b) a
++
++/-! ### Tail node `n11` = `153 x [y <- S3g(y, R1, R1)]` from `y = n4`, exponent `415` -/
++
++/-- Tail node `n11`. -/
++def Rn11 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 415) :=
++  castR (by norm_num) (tailIter Substitutions.S3g (Rn4 R) (R1 R) (R1 R) 153)
++
++/-- The sizes at tail node `n11`. -/
++def sn11 : Sizes := tailW Substitutions.S3g sn4 s1 s1 153
++
++/-- Tail node `n11` has the sizes `sn11` (by the tail induction `w_tailIter`). -/
++lemma wn11 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn11 R).w a = sn11.get a :=
++  (w_castR _ _ a).trans
++    (w_tailIter Substitutions.S3g (Rn4 R) (R1 R) (R1 R) sn4 s1 s1
++      (fun b => wn4 R h b) (fun b => w1 R h b) (fun b => w1 R h b) 153 a)
++
++/-! ### Tail node `n12` = `52 x [y <- S3g(y, R1, R1)]` from `y = n6`, exponent `213` -/
++
++/-- Tail node `n12`. -/
++def Rn12 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 213) :=
++  castR (by norm_num) (tailIter Substitutions.S3g (Rn6 R) (R1 R) (R1 R) 52)
++
++/-- The sizes at tail node `n12`. -/
++def sn12 : Sizes := tailW Substitutions.S3g sn6 s1 s1 52
++
++/-- Tail node `n12` has the sizes `sn12` (by the tail induction `w_tailIter`). -/
++lemma wn12 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn12 R).w a = sn12.get a :=
++  (w_castR _ _ a).trans
++    (w_tailIter Substitutions.S3g (Rn6 R) (R1 R) (R1 R) sn6 s1 s1
++      (fun b => wn6 R h b) (fun b => w1 R h b) (fun b => w1 R h b) 52 a)
++
++/-! ### Node `n13` = `S3g(n11, R1, n12)`, exponent `629` -/
++
++/-- The child exponents of node `n13`. -/
++def en13 : Fin 3 → Nat := Fin.cases 415 (Fin.cases 1 (fun _ => 213))
++
++/-- The children of node `n13`. -/
++def chn13 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en13 i)) :=
++  Fin.cases (Rn11 R) (Fin.cases (R1 R) (fun _ => (Rn12 R)))
++
++/-- Node `n13`. -/
++def Rn13 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 629) :=
++  Realisation.multiSubst en13 (chn13 R) Substitutions.S3g
++
++/-- The sizes at node `n13`. -/
++def sn13 : Sizes := node3 Substitutions.S3g sn11 s1 sn12
++
++/-- Node `n13` has the sizes `sn13`. -/
++lemma wn13 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn13 R).w a = sn13.get a :=
++  w_node3 Substitutions.S3g (chn13 R) sn11 s1 sn12
++    (fun b => wn11 R h b) (fun b => w1 R h b) (fun b => wn12 R h b) a
++
++/-! ### Node `n14` = `S3g(n13, R1, n3)`, exponent `711` -/
++
++/-- The child exponents of node `n14`. -/
++def en14 : Fin 3 → Nat := Fin.cases 629 (Fin.cases 1 (fun _ => 81))
++
++/-- The children of node `n14`. -/
++def chn14 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en14 i)) :=
++  Fin.cases (Rn13 R) (Fin.cases (R1 R) (fun _ => (Rn3 R)))
++
++/-- Node `n14`. -/
++def Rn14 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 711) :=
++  Realisation.multiSubst en14 (chn14 R) Substitutions.S3g
++
++/-- The sizes at node `n14`. -/
++def sn14 : Sizes := node3 Substitutions.S3g sn13 s1 sn3
++
++/-- Node `n14` has the sizes `sn14`. -/
++lemma wn14 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn14 R).w a = sn14.get a :=
++  w_node3 Substitutions.S3g (chn14 R) sn13 s1 sn3
++    (fun b => wn13 R h b) (fun b => w1 R h b) (fun b => wn3 R h b) a
++
++/-! ### Node `n15` = `S3g(n14, R1, R1)`, exponent `713` -/
++
++/-- The child exponents of node `n15`. -/
++def en15 : Fin 3 → Nat := Fin.cases 711 (Fin.cases 1 (fun _ => 1))
++
++/-- The children of node `n15`. -/
++def chn15 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en15 i)) :=
++  Fin.cases (Rn14 R) (Fin.cases (R1 R) (fun _ => (R1 R)))
++
++/-- Node `n15`. -/
++def Rn15 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 713) :=
++  Realisation.multiSubst en15 (chn15 R) Substitutions.S3g
++
++/-- The sizes at node `n15`. -/
++def sn15 : Sizes := node3 Substitutions.S3g sn14 s1 s1
++
++/-- Node `n15` has the sizes `sn15`. -/
++lemma wn15 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn15 R).w a = sn15.get a :=
++  w_node3 Substitutions.S3g (chn15 R) sn14 s1 s1
++    (fun b => wn14 R h b) (fun b => w1 R h b) (fun b => w1 R h b) a
++
++/-! ### Tail node `n16` = `177 x [y <- S3g(y, R1, R1)]` from `y = n4`, exponent `463` -/
++
++/-- Tail node `n16`. -/
++def Rn16 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 463) :=
++  castR (by norm_num) (tailIter Substitutions.S3g (Rn4 R) (R1 R) (R1 R) 177)
++
++/-- The sizes at tail node `n16`. -/
++def sn16 : Sizes := tailW Substitutions.S3g sn4 s1 s1 177
++
++/-- Tail node `n16` has the sizes `sn16` (by the tail induction `w_tailIter`). -/
++lemma wn16 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn16 R).w a = sn16.get a :=
++  (w_castR _ _ a).trans
++    (w_tailIter Substitutions.S3g (Rn4 R) (R1 R) (R1 R) sn4 s1 s1
++      (fun b => wn4 R h b) (fun b => w1 R h b) (fun b => w1 R h b) 177 a)
++
++/-! ### Tail node `n17` = `68 x [y <- S3g(y, R1, R1)]` from `y = n6`, exponent `245` -/
++
++/-- Tail node `n17`. -/
++def Rn17 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 245) :=
++  castR (by norm_num) (tailIter Substitutions.S3g (Rn6 R) (R1 R) (R1 R) 68)
++
++/-- The sizes at tail node `n17`. -/
++def sn17 : Sizes := tailW Substitutions.S3g sn6 s1 s1 68
++
++/-- Tail node `n17` has the sizes `sn17` (by the tail induction `w_tailIter`). -/
++lemma wn17 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn17 R).w a = sn17.get a :=
++  (w_castR _ _ a).trans
++    (w_tailIter Substitutions.S3g (Rn6 R) (R1 R) (R1 R) sn6 s1 s1
++      (fun b => wn6 R h b) (fun b => w1 R h b) (fun b => w1 R h b) 68 a)
++
++/-! ### Node `n18` = `S3g(n16, R1, n17)`, exponent `709` -/
++
++/-- The child exponents of node `n18`. -/
++def en18 : Fin 3 → Nat := Fin.cases 463 (Fin.cases 1 (fun _ => 245))
++
++/-- The children of node `n18`. -/
++def chn18 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en18 i)) :=
++  Fin.cases (Rn16 R) (Fin.cases (R1 R) (fun _ => (Rn17 R)))
++
++/-- Node `n18`. -/
++def Rn18 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 709) :=
++  Realisation.multiSubst en18 (chn18 R) Substitutions.S3g
++
++/-- The sizes at node `n18`. -/
++def sn18 : Sizes := node3 Substitutions.S3g sn16 s1 sn17
++
++/-- Node `n18` has the sizes `sn18`. -/
++lemma wn18 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn18 R).w a = sn18.get a :=
++  w_node3 Substitutions.S3g (chn18 R) sn16 s1 sn17
++    (fun b => wn16 R h b) (fun b => w1 R h b) (fun b => wn17 R h b) a
++
++/-! ### Node `n19` = `S3g(n18, R1, n3)`, exponent `791` -/
++
++/-- The child exponents of node `n19`. -/
++def en19 : Fin 3 → Nat := Fin.cases 709 (Fin.cases 1 (fun _ => 81))
++
++/-- The children of node `n19`. -/
++def chn19 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en19 i)) :=
++  Fin.cases (Rn18 R) (Fin.cases (R1 R) (fun _ => (Rn3 R)))
++
++/-- Node `n19`. -/
++def Rn19 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 791) :=
++  Realisation.multiSubst en19 (chn19 R) Substitutions.S3g
++
++/-- The sizes at node `n19`. -/
++def sn19 : Sizes := node3 Substitutions.S3g sn18 s1 sn3
++
++/-- Node `n19` has the sizes `sn19`. -/
++lemma wn19 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn19 R).w a = sn19.get a :=
++  w_node3 Substitutions.S3g (chn19 R) sn18 s1 sn3
++    (fun b => wn18 R h b) (fun b => w1 R h b) (fun b => wn3 R h b) a
++
++/-! ### Node `n20` = `S3g(n19, R1, R1)`, exponent `793` -/
++
++/-- The child exponents of node `n20`. -/
++def en20 : Fin 3 → Nat := Fin.cases 791 (Fin.cases 1 (fun _ => 1))
++
++/-- The children of node `n20`. -/
++def chn20 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en20 i)) :=
++  Fin.cases (Rn19 R) (Fin.cases (R1 R) (fun _ => (R1 R)))
++
++/-- Node `n20`. -/
++def Rn20 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 793) :=
++  Realisation.multiSubst en20 (chn20 R) Substitutions.S3g
++
++/-- The sizes at node `n20`. -/
++def sn20 : Sizes := node3 Substitutions.S3g sn19 s1 s1
++
++/-- Node `n20` has the sizes `sn20`. -/
++lemma wn20 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn20 R).w a = sn20.get a :=
++  w_node3 Substitutions.S3g (chn20 R) sn19 s1 s1
++    (fun b => wn19 R h b) (fun b => w1 R h b) (fun b => w1 R h b) a
++
++/-! ### Tail node `n21` = `230 x [y <- S3g(y, R1, R1)]` from `y = n4`, exponent `569` -/
++
++/-- Tail node `n21`. -/
++def Rn21 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 569) :=
++  castR (by norm_num) (tailIter Substitutions.S3g (Rn4 R) (R1 R) (R1 R) 230)
++
++/-- The sizes at tail node `n21`. -/
++def sn21 : Sizes := tailW Substitutions.S3g sn4 s1 s1 230
++
++/-- Tail node `n21` has the sizes `sn21` (by the tail induction `w_tailIter`). -/
++lemma wn21 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn21 R).w a = sn21.get a :=
++  (w_castR _ _ a).trans
++    (w_tailIter Substitutions.S3g (Rn4 R) (R1 R) (R1 R) sn4 s1 s1
++      (fun b => wn4 R h b) (fun b => w1 R h b) (fun b => w1 R h b) 230 a)
++
++/-! ### Tail node `n22` = `80 x [y <- S3g(y, R1, R1)]` from `y = n6`, exponent `269` -/
++
++/-- Tail node `n22`. -/
++def Rn22 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 269) :=
++  castR (by norm_num) (tailIter Substitutions.S3g (Rn6 R) (R1 R) (R1 R) 80)
++
++/-- The sizes at tail node `n22`. -/
++def sn22 : Sizes := tailW Substitutions.S3g sn6 s1 s1 80
++
++/-- Tail node `n22` has the sizes `sn22` (by the tail induction `w_tailIter`). -/
++lemma wn22 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn22 R).w a = sn22.get a :=
++  (w_castR _ _ a).trans
++    (w_tailIter Substitutions.S3g (Rn6 R) (R1 R) (R1 R) sn6 s1 s1
++      (fun b => wn6 R h b) (fun b => w1 R h b) (fun b => w1 R h b) 80 a)
++
++/-! ### Node `n23` = `S3g(n21, R1, n22)`, exponent `839` -/
++
++/-- The child exponents of node `n23`. -/
++def en23 : Fin 3 → Nat := Fin.cases 569 (Fin.cases 1 (fun _ => 269))
++
++/-- The children of node `n23`. -/
++def chn23 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en23 i)) :=
++  Fin.cases (Rn21 R) (Fin.cases (R1 R) (fun _ => (Rn22 R)))
++
++/-- Node `n23`. -/
++def Rn23 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 839) :=
++  Realisation.multiSubst en23 (chn23 R) Substitutions.S3g
++
++/-- The sizes at node `n23`. -/
++def sn23 : Sizes := node3 Substitutions.S3g sn21 s1 sn22
++
++/-- Node `n23` has the sizes `sn23`. -/
++lemma wn23 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn23 R).w a = sn23.get a :=
++  w_node3 Substitutions.S3g (chn23 R) sn21 s1 sn22
++    (fun b => wn21 R h b) (fun b => w1 R h b) (fun b => wn22 R h b) a
++
++/-! ### Node `n24` = `S3g(n23, R1, n3)`, exponent `921` -/
++
++/-- The child exponents of node `n24`. -/
++def en24 : Fin 3 → Nat := Fin.cases 839 (Fin.cases 1 (fun _ => 81))
++
++/-- The children of node `n24`. -/
++def chn24 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en24 i)) :=
++  Fin.cases (Rn23 R) (Fin.cases (R1 R) (fun _ => (Rn3 R)))
++
++/-- Node `n24`. -/
++def Rn24 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 921) :=
++  Realisation.multiSubst en24 (chn24 R) Substitutions.S3g
++
++/-- The sizes at node `n24`. -/
++def sn24 : Sizes := node3 Substitutions.S3g sn23 s1 sn3
++
++/-- Node `n24` has the sizes `sn24`. -/
++lemma wn24 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn24 R).w a = sn24.get a :=
++  w_node3 Substitutions.S3g (chn24 R) sn23 s1 sn3
++    (fun b => wn23 R h b) (fun b => w1 R h b) (fun b => wn3 R h b) a
++
++/-! ### Node `n25` = `S3g(n24, R1, n2)`, exponent `949` -/
++
++/-- The child exponents of node `n25`. -/
++def en25 : Fin 3 → Nat := Fin.cases 921 (Fin.cases 1 (fun _ => 27))
++
++/-- The children of node `n25`. -/
++def chn25 (R : Realisation Letter Letter.sep G) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (en25 i)) :=
++  Fin.cases (Rn24 R) (Fin.cases (R1 R) (fun _ => (Rn2 R)))
++
++/-- Node `n25`. -/
++def Rn25 (R : Realisation Letter Letter.sep G) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G 949) :=
++  Realisation.multiSubst en25 (chn25 R) Substitutions.S3g
++
++/-- The sizes at node `n25`. -/
++def sn25 : Sizes := node3 Substitutions.S3g sn24 s1 sn2
++
++/-- Node `n25` has the sizes `sn25`. -/
++lemma wn25 (R : Realisation Letter Letter.sep G) (h : ∀ a, R.w a = w0 a) (a : Letter) :
++    (Rn25 R).w a = sn25.get a :=
++  w_node3 Substitutions.S3g (chn25 R) sn24 s1 sn2
++    (fun b => wn24 R h b) (fun b => w1 R h b) (fun b => wn2 R h b) a
++
++/-! ### The bound -/
++
++/-- `M` is the size of the terminal code on the four terminal nodes. -/
++theorem stepM : M = code4 K sn10 sn15 sn20 sn25 := by
++  native_decide
++
++/-- The exponents of the 4 terminal children. -/
++def eT : Fin 4 → Nat := Fin.cases 1245 (Fin.cases 713 (Fin.cases 793 (fun _ => 949)))
++
++/-- The terminal children. -/
++def terminalChildren (R : Realisation Letter Letter.sep G) :
++    (i : Fin 4) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (eT i)) :=
++  Fin.cases (Rn10 R) (Fin.cases (Rn15 R) (Fin.cases (Rn20 R) (fun _ => (Rn25 R))))
++
++/-- **The bound.**  A port system whose seven families have the sizes of `w0` gives an
++independent set of size `M` in `G^(box 3700)`. -/
++theorem bound (S : RichPortSystem G) (hw : ∀ a, (S.fam a).card = w0 a) :
++    M ≤ (SimpleGraph.strongPower G 3700).indepNum := by
++  have h : ∀ a, S.toRealisation.w a = w0 a := hw
++  have hc := sum_code4 K (terminalChildren S.toRealisation) sn10 sn15 sn20 sn25
++    (fun b => wn10 S.toRealisation h b) (fun b => wn15 S.toRealisation h b) (fun b => wn20 S.toRealisation h b) (fun b => wn25 S.toRealisation h b)
++  exact le_trans (le_of_eq (stepM.trans hc.symm))
++    (le_indepNum_multiCode eT (terminalChildren S.toRealisation) K)
++
++end CertC19c
++end ShannonBounds
+diff -ruN a/ShannonBounds/DagTail.lean b/ShannonBounds/DagTail.lean
+--- a/ShannonBounds/DagTail.lean	1969-12-31 19:00:00
++++ b/ShannonBounds/DagTail.lean	2026-10-01 07:16:24
+@@ -0,0 +1,169 @@
++/-
++Contributed in 2026 by Griffin Long, with the AI agent agent-afk, as an addition to the
++ShannonBounds framework of Pjotr Buys, Sven Polak and Jeroen Zuiddam (who did not write this
++file). Released under Apache 2.0 license as described in the file LICENSE.
++(This file: generic helpers for DAG schedules with several long homogeneous tails; it only
++uses `Realisation.multiSubst` and `w_multiSubst` from `Layered.lean`.)
++-/
++import ShannonBounds.PortRealisation
++import ShannonBounds.Layered
++
++/-!
++# Iterated tails and size bookkeeping for DAG schedules
++
++A schedule node `multiSubst e ch S` has, letter by letter, the size
++`∑ x ∈ S.T a, ∏ i, (ch i).w (x i)` (`w_multiSubst`).  This file packages that computation
++on a strict seven-field record `Sizes` (so that evaluating a long chain inside `native_decide`
++is linear in its length) and proves, once and for all:
++
++* `w_node2`, `w_node3`: a node has the sizes `node2`/`node3` of its children's sizes;
++* `tailIter S X Z1 Z2 n`: the `n`-fold tail `y ↦ S (y, Z1, Z2)` started at `y = X`, a
++  realisation in `G^(box (e0 + n (k1 + k2)))`, defined by structural recursion on `n`;
++* `w_tailIter`: by induction on `n`, its sizes are `tailW S sX s1 s2 n`.
++
++A certificate then instantiates `tailIter` once per branch, with its own start node and length.
++-/
++
++namespace ShannonBounds
++namespace DagTail
++
++open SimpleGraph
++
++/-- The seven sizes, as a strict record. -/
++structure Sizes where
++  b : Nat
++  n : Nat
++  a : Nat
++  d : Nat
++  o : Nat
++  h : Nat
++  v : Nat
++
++/-- Read off a size. -/
++def Sizes.get (s : Sizes) : Letter → Nat
++  | .B => s.b
++  | .N => s.n
++  | .A => s.a
++  | .D => s.d
++  | .O => s.o
++  | .H => s.h
++  | .V => s.v
++
++/-- Tabulate a size function. -/
++def Sizes.ofFun (f : Letter → Nat) : Sizes :=
++  ⟨f .B, f .N, f .A, f .D, f .O, f .H, f .V⟩
++
++lemma Sizes.get_ofFun (f : Letter → Nat) (a : Letter) : (Sizes.ofFun f).get a = f a := by
++  cases a <;> rfl
++
++/-- The sizes of an arity-`2` node, from the sizes of its children. -/
++def node2 (S : Subst Letter Letter.sep 2) (s0 s1 : Sizes) : Sizes :=
++  Sizes.ofFun fun a => ∑ x ∈ S.T a, s0.get (x 0) * s1.get (x 1)
++
++/-- The sizes of an arity-`3` node, from the sizes of its children. -/
++def node3 (S : Subst Letter Letter.sep 3) (s0 s1 s2 : Sizes) : Sizes :=
++  Sizes.ofFun fun a => ∑ x ∈ S.T a, s0.get (x 0) * s1.get (x 1) * s2.get (x 2)
++
++/-- The size of the independent set of an arity-`4` terminal code. -/
++def code4 (K : Code Letter Letter.sep 4) (s0 s1 s2 s3 : Sizes) : Nat :=
++  ∑ x ∈ K.C, s0.get (x 0) * s1.get (x 1) * s2.get (x 2) * s3.get (x 3)
++
++/-- The sizes of the `n`-fold tail `y ↦ S (y, z1, z2)` started at `y = s`. -/
++def tailW (S : Subst Letter Letter.sep 3) (s s1 s2 : Sizes) : ℕ → Sizes
++  | 0 => s
++  | n + 1 => node3 S (tailW S s s1 s2 n) s1 s2
++
++variable {α : Type*} [Fintype α] [DecidableEq α]
++  {G : SimpleGraph α} [DecidableRel G.Adj]
++
++/-- Transport a realisation along an equality of exponents. -/
++def castR {m n : ℕ} (h : m = n) (R : Realisation Letter Letter.sep (SimpleGraph.strongPower G m)) :
++    Realisation Letter Letter.sep (SimpleGraph.strongPower G n) :=
++  h ▸ R
++
++omit [Fintype α] in
++lemma w_castR {m n : ℕ} (h : m = n)
++    (R : Realisation Letter Letter.sep (SimpleGraph.strongPower G m)) (a : Letter) :
++    (castR h R).w a = R.w a := by
++  subst h; rfl
++
++/-- An arity-`2` node has the sizes `node2` of its children's sizes. -/
++lemma w_node2 (S : Subst Letter Letter.sep 2) {e : Fin 2 → ℕ}
++    (ch : (i : Fin 2) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (e i)))
++    (s0 s1 : Sizes) (h0 : ∀ b, (ch 0).w b = s0.get b) (h1 : ∀ b, (ch 1).w b = s1.get b)
++    (a : Letter) : (Realisation.multiSubst e ch S).w a = (node2 S s0 s1).get a := by
++  rw [w_multiSubst, node2, Sizes.get_ofFun]
++  refine Finset.sum_congr rfl fun x _ => ?_
++  rw [Fin.prod_univ_two, h0, h1]
++
++/-- An arity-`3` node has the sizes `node3` of its children's sizes. -/
++lemma w_node3 (S : Subst Letter Letter.sep 3) {e : Fin 3 → ℕ}
++    (ch : (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (e i)))
++    (s0 s1 s2 : Sizes) (h0 : ∀ b, (ch 0).w b = s0.get b) (h1 : ∀ b, (ch 1).w b = s1.get b)
++    (h2 : ∀ b, (ch 2).w b = s2.get b)
++    (a : Letter) : (Realisation.multiSubst e ch S).w a = (node3 S s0 s1 s2).get a := by
++  rw [w_multiSubst, node3, Sizes.get_ofFun]
++  refine Finset.sum_congr rfl fun x _ => ?_
++  rw [Fin.prod_univ_three, h0, h1, h2]
++
++omit [Fintype α] in
++/-- An arity-`4` terminal code applied to children with known sizes. -/
++lemma sum_code4 (K : Code Letter Letter.sep 4) {e : Fin 4 → ℕ}
++    (ch : (i : Fin 4) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (e i)))
++    (s0 s1 s2 s3 : Sizes) (h0 : ∀ b, (ch 0).w b = s0.get b) (h1 : ∀ b, (ch 1).w b = s1.get b)
++    (h2 : ∀ b, (ch 2).w b = s2.get b) (h3 : ∀ b, (ch 3).w b = s3.get b) :
++    (∑ x ∈ K.C, ∏ i, (ch i).w (x i)) = code4 K s0 s1 s2 s3 := by
++  rw [code4]
++  refine Finset.sum_congr rfl fun x _ => ?_
++  rw [Fin.prod_univ_four, h0, h1, h2, h3]
++
++/-- The child exponents of a tail step. -/
++def tailE (e0 k1 k2 n : ℕ) : Fin 3 → ℕ := Fin.cases (e0 + n * (k1 + k2)) (Fin.cases k1 (fun _ => k2))
++
++lemma sum_tailE (e0 k1 k2 n : ℕ) : ∑ i, tailE e0 k1 k2 n i = e0 + (n + 1) * (k1 + k2) := by
++  rw [Fin.sum_univ_three]
++  show e0 + n * (k1 + k2) + k1 + k2 = e0 + (n + 1) * (k1 + k2)
++  ring
++
++lemma tailE_zero (e0 k1 k2 : ℕ) : e0 = e0 + 0 * (k1 + k2) := by ring
++
++/-- The children of a tail step: the previous tail node and the two fixed children. -/
++def tailCh {e0 k1 k2 : ℕ} (n : ℕ)
++    (Y : Realisation Letter Letter.sep (SimpleGraph.strongPower G (e0 + n * (k1 + k2))))
++    (Z1 : Realisation Letter Letter.sep (SimpleGraph.strongPower G k1))
++    (Z2 : Realisation Letter Letter.sep (SimpleGraph.strongPower G k2)) :
++    (i : Fin 3) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (tailE e0 k1 k2 n i)) :=
++  Fin.cases Y (Fin.cases Z1 (fun _ => Z2))
++
++/-- **The iterated tail.**  `tailIter S X Z1 Z2 0 = X` and
++`tailIter S X Z1 Z2 (n+1) = S (tailIter S X Z1 Z2 n, Z1, Z2)`. -/
++def tailIter (S : Subst Letter Letter.sep 3) {e0 k1 k2 : ℕ}
++    (X : Realisation Letter Letter.sep (SimpleGraph.strongPower G e0))
++    (Z1 : Realisation Letter Letter.sep (SimpleGraph.strongPower G k1))
++    (Z2 : Realisation Letter Letter.sep (SimpleGraph.strongPower G k2)) :
++    (n : ℕ) → Realisation Letter Letter.sep (SimpleGraph.strongPower G (e0 + n * (k1 + k2)))
++  | 0 => castR (tailE_zero e0 k1 k2) X
++  | n + 1 => castR (sum_tailE e0 k1 k2 n)
++      (Realisation.multiSubst (tailE e0 k1 k2 n) (tailCh n (tailIter S X Z1 Z2 n) Z1 Z2) S)
++
++/-- **The tail induction.**  The `n`-fold tail has the sizes `tailW S sX s1 s2 n`. -/
++lemma w_tailIter (S : Subst Letter Letter.sep 3) {e0 k1 k2 : ℕ}
++    (X : Realisation Letter Letter.sep (SimpleGraph.strongPower G e0))
++    (Z1 : Realisation Letter Letter.sep (SimpleGraph.strongPower G k1))
++    (Z2 : Realisation Letter Letter.sep (SimpleGraph.strongPower G k2))
++    (sX s1 s2 : Sizes) (hX : ∀ b, X.w b = sX.get b) (h1 : ∀ b, Z1.w b = s1.get b)
++    (h2 : ∀ b, Z2.w b = s2.get b) :
++    ∀ n a, (tailIter S X Z1 Z2 n).w a = (tailW S sX s1 s2 n).get a := by
++  intro n
++  induction n with
++  | zero =>
++    intro a
++    rw [tailIter, w_castR, tailW]
++    exact hX a
++  | succ n ih =>
++    intro a
++    rw [tailIter, w_castR, tailW]
++    exact w_node3 S _ _ s1 s2 ih h1 h2 a
++
++end DagTail
++end ShannonBounds
+diff -ruN a/ShannonBounds.lean b/ShannonBounds.lean
+--- a/ShannonBounds.lean	2026-10-01 07:16:24
++++ b/ShannonBounds.lean	2026-10-01 07:16:24
+@@ -57,3 +57,8 @@
+ import ShannonBounds.Reindex
+ import ShannonBounds.Substitutions
+ import ShannonBounds.TerminalCodes
++import ShannonBounds.DagTail
++import ShannonBounds.CertC15b
++import ShannonBounds.CapCertC15b
++import ShannonBounds.CertC19c
++import ShannonBounds.CapCertC19c

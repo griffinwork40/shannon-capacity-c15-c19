@@ -1,0 +1,17 @@
+shannon-capacity-c15-c19
+Copyright 2026 Griffin Long
+
+Licensing:
+
+* Code, Lean files, the patch (artifact/certL2.patch), scripts, schedules and logs: Apache License,
+  Version 2.0. See LICENSE.
+* Paper text in paper/ (note.md, note.tex, note.pdf): Creative Commons Attribution 4.0
+  International (CC BY 4.0), https://creativecommons.org/licenses/by/4.0/
+
+This work is a derivative of, and an addition to, the ShannonBounds Lean framework by Pjotr Buys,
+Sven Polak and Jeroen Zuiddam (https://github.com/spectra-research/shannon-capacity-lean, commit
+aa21eeb12b75b0413d3fa9fb4208b5d0bf2c4d65), released under the Apache License 2.0. BPZ did not write
+the files added here. That repository is not redistributed here; check.sh clones it at run time.
+
+The computational work was produced with the autonomous agent runtime agent-afk
+(https://github.com/griffinwork40/agent-afk) using Anthropic Claude models; see README.md.
