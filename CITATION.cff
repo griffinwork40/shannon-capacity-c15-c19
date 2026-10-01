@@ -1,11 +1,11 @@
 cff-version: 1.2.0
-message: "If you use this work, please cite it as below, and also cite Buys, Polak and Zuiddam (arXiv:2607.29681), on whose Lean framework it is built."
-title: "Slightly improved lower bounds for the Shannon capacity of C15 and C19, formalised in the Buys-Polak-Zuiddam Lean framework"
-abstract: "Lean 4 certificates for Theta(C15) >= 7.301635000991096 and Theta(C19) >= 9.357203012726939, as a patch on the BPZ ShannonBounds repository at commit aa21eeb, with a one-command checker."
+message: "If you use this work, please cite it as below, and also cite Buys, Polak and Zuiddam (arXiv:2607.29681), on whose Lean framework it is built, and, for C13, Matthew Protti's repository (tag v0.5.0)."
+title: "Slightly improved lower bounds for the Shannon capacity of C13, C15 and C19, formalised in the Buys-Polak-Zuiddam Lean framework"
+abstract: "Lean 4 certificates for Theta(C15) >= 7.301635000991096 and Theta(C19) >= 9.357203012726939 (v1.0), and Theta(C13) >= 6.302927071589786 (v1.1, improving M. Protti's 6.302927046770772), each as a patch on the BPZ ShannonBounds repository at commit aa21eeb, with one-command checkers."
 authors:
   - family-names: "Long"
     given-names: "Griffin"
-version: "1.0.0"
+version: "1.1.0"
 date-released: "2026-10-01"
 license: "Apache-2.0"
 repository-code: "https://github.com/griffinwork40/shannon-capacity-c15-c19"
@@ -16,6 +16,7 @@ keywords:
   - "Lean 4"
   - "formal verification"
   - "strong product"
+  - "C13"
 references:
   - type: article
     title: "Lean-verified lower bounds for the Shannon capacity of odd cycles"
@@ -29,3 +30,13 @@ references:
     year: 2026
     url: "https://arxiv.org/abs/2607.29681"
     repository-code: "https://github.com/spectra-research/shannon-capacity-lean"
+  - type: software
+    title: "Layered independent-set constructions (C11 capacity bounds and a uniform avoidance-profile compiler)"
+    authors:
+      - family-names: "Protti"
+        given-names: "Matthew"
+    year: 2026
+    version: "v0.5.0"
+    commit: "dfaef37e60e55c55b1744d9badd1f26c5364c7d5"
+    repository-code: "https://github.com/matthewprotti/c11-shannon-capacity-lower-bound"
+    date-released: "2026-09-09"

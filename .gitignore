@@ -1,10 +1,14 @@
 # work directory created by artifact/check.sh (BPZ clone, Lean build)
 c15-c19-check/
+# work directory created by artifact-C13/check.sh
+c13-check/
 # LaTeX build by-products
 *.aux
 *.log
 !logs/*.log
 !artifact/*.log
+!artifact-C13/*.log
+!review/C13/*.log
 !method/search_logs/*.log
 *.out
 *.toc

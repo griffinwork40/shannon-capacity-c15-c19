@@ -1,17 +1,17 @@
-% Not yet submitted or posted.
+% Not yet submitted or posted. v1.1 addendum (C13) dated 2026-10-01.
 \documentclass[11pt]{amsart}
 \usepackage[margin=1in]{geometry}
 \usepackage{amssymb,amsthm,booktabs,alltt}
 \usepackage[hidelinks]{hyperref}
 \usepackage{url}
-\hypersetup{pdfauthor={Griffin Long},pdftitle={Slightly improved lower bounds for the Shannon capacity of C15 and C19}}
+\hypersetup{pdfauthor={Griffin Long},pdftitle={Slightly improved lower bounds for the Shannon capacity of C13, C15 and C19}}
 
 \newtheorem{theorem}{Theorem}
 \newcommand{\T}{\Theta}
 \newcommand{\sbx}{\boxtimes}
 \newcommand{\code}[1]{\texttt{#1}}
 
-\title[Shannon capacity of $C_{15}$ and $C_{19}$]{Slightly improved lower bounds for the Shannon capacity of $C_{15}$ and $C_{19}$, formalised in the Buys--Polak--Zuiddam Lean framework}
+\title[Shannon capacity of $C_{13}$, $C_{15}$ and $C_{19}$]{Slightly improved lower bounds for the Shannon capacity of $C_{13}$, $C_{15}$ and $C_{19}$, formalised in the Buys--Polak--Zuiddam Lean framework}
 \author{Griffin Long}
 \date{2026-10-01}
 
@@ -28,6 +28,8 @@ substitution schedules are new. They were found by an automated search over BPZ'
 space, run by the AI agent agent-afk. Both bounds are Lean~4 theorems, delivered as a patch that
 only adds files to BPZ's repository. The trust base is the same as BPZ's, including
 \code{native\_decide}. One command reproduces the check from a fresh clone.
+An addendum proves $\T(C_{13})\ge 6.302927071589786$, about $2.5\cdot10^{-8}$ above
+M.~Protti's Lean-checked $6.302927046770772$, by the same method.
 \end{abstract}
 
 \maketitle
@@ -199,6 +201,14 @@ $\T(C_{19})\ge 9.357202700233073$. Public release:
 with SHA-256, proof sources, logs, reports and this note); \code{PROVENANCE.md} there maps every
 released file to the private research repository by commit and hash.
 
+The $C_{13}$ result of Section~\ref{sec:c13} has its own bundle, checked the same way (it also
+compares exactly with Protti's published integer):
+\begin{alltt}\small
+cd shannon-C13 && sh check.sh --install-elan
+\end{alltt}
+In the public repository it is \code{artifact-C13/} (tag \code{v1.1}, tarball
+\code{shannon-C13-v1.1.tar.gz}).
+
 \section{How the schedules were found}\label{sec:method}
 
 The search ran inside BPZ's grammar: atoms $R_1, R_f$, BPZ's tables, $J$-fold tails, and a
@@ -247,7 +257,7 @@ The literature check covered arXiv, Semantic Scholar, OpenAlex, Zenodo, GitHub, 
 Wikipedia, MathOverflow and OEIS, up to 2026-10-01. It did not cover Google Scholar, the Lean
 Zulip (only its web-searchable archive), or unpublished work.
 
-\section{Remarks and residual risks}
+\section{Remarks and residual risks}\label{sec:remarks}
 
 \emph{Not new.} The framework, tables, codes and Lean infrastructure are BPZ's, building on Gao
 and IRCR. The base sets are due to \cite{BMR,CGR,dBBZ}. No new method is introduced.
@@ -276,9 +286,96 @@ machines belong to one person. No external party has reproduced the result yet.
 themselves. The contribution is certified values and a reproducible mechanised workflow.
 \end{enumerate}
 
+\section{Addendum (v1.1): the 13-cycle}\label{sec:c13}
+
+\begin{theorem}
+$\T(C_{13})\ge 6.302927071589786$.
+\end{theorem}
+
+\begin{alltt}\small
+theorem ShannonBounds.CapCertC13b.shannonCapacity_cycleGraph_13_ge :
+    (6.302927071589786 : \(\mathbb{R}\)) \(\le\) shannonCapacity (SimpleGraph.cycleGraph 13)
+\end{alltt}
+As in Section~2, \code{shannonCapacity} is BPZ's definition and \code{cycleGraph} is Mathlib's.
+The bound comes from an explicit integer $M$ (418 digits) with $M\le\alpha(C_{13}^{\sbx 522})$,
+proved as \code{CapCertC13b.alpha\_strongPower\_ge}, and the decimal is the exact truncation of
+$M^{1/522}$ (\code{tight}).
+
+\emph{Previous bounds.} BPZ's repository at \code{aa21eeb} gives $6.302926729310108$ in
+$C_{13}^{\sbx 522}$ (README row \code{| 13 | 6.302926729310108 | 522 | 418 |}); their v1 paper
+gives $6.302455083464$. M.~Protti \cite{Pro} improved the repository value to
+$6.302927046770772$ (tag \code{v0.5.0}, commit \code{dfaef37}, file \code{C13R8D522.lean},
+theorem \code{capacity\_lower}), also in Lean and also in dimension 522. His construction keeps
+BPZ's base and schedule and adds guarded typed cells at three nodes.
+
+\begin{center}\footnotesize
+\begin{tabular}{llrl}
+\toprule
+bound & source & dimension & gain over previous\\
+\midrule
+6.302455083464 & BPZ v1 paper & & \\
+6.302926729310108 & BPZ \code{aa21eeb} & 522 & \\
+6.302927046770772 & Protti \code{v0.5.0} & 522 & $3.17\cdot10^{-7}$\\
+\textbf{6.302927071589786} & this note & 522 & $\mathbf{2.48\cdot10^{-8}}$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\emph{Exact comparison.} Since all three constructions live in $C_{13}^{\sbx 522}$, comparing
+the bounds is comparing integers. Our $M$ and Protti's literal $N$ both have 418 digits, and
+$M>N$ with $M-N\approx 4.7204\cdot10^{411}$ and $M/N-1\approx 2.06\cdot10^{-6}$. To more digits
+the two roots are $6.30292707158978611017\ldots$ and $6.30292704677077232196\ldots$. The checker
+clones Protti's tag and does this comparison itself.
+
+\emph{Construction.} Same base as BPZ's \code{CertC13}: their rich port system in
+$C_{13}^{\sbx 6}$ with family sizes $w_0=(B,N,A,D,O,H,V)=(61516,60502,1014,1014,1014,1014,1014)$.
+The underlying independent set in $C_{13}^{\sbx 6}$ has size 62530, the size first found by Itty,
+Rosin, Carstensen and Reichman \cite{IRCR}; BPZ's method builds on Gao \cite{Gao} and on
+\cite{IRCR}. The schedule uses only BPZ's tables S2b and S3c, the atoms $R_1$ and $R_f$, and BPZ's
+arity-3 terminal code K3a. It has 49 distinct nodes and no iterated tails; K3a is applied to three
+nodes of exponents $(34,36,17)$, so $E=87$ and $p=6\cdot87=522$. The schedule is listed in full in
+the header of \code{CertC13b.lean} and in \code{schedules/best\_C13\_SA1.json}. It was found by the
+simulated annealing of Section~\ref{sec:method}, run over BPZ's $C_{13}$ grammar and scored
+exactly. It uses no typed cells, so it is a different kind of change from Protti's: his keeps
+BPZ's schedule and enlarges families at three of its nodes with guarded typed cells; ours replaces
+the schedule. The two may well combine; we have not tried.
+
+\emph{Lean.} The patch \code{certC13.patch} (sha256 \code{7fde38bc\ldots01138}) on \code{aa21eeb}
+adds \code{DagTail.lean} (byte-identical to the v1.0 one), \code{DagCode3.lean} (arity-3 analogues
+\code{code3}, \code{sum\_code3} of \code{DagTail.code4}, \code{sum\_code4}), \code{CertC13b.lean}
+and \code{CapCertC13b.lean}, and four import lines. It is an alternative to \code{certL2.patch},
+not stacked on it. \code{\#print axioms} lists \code{propext}, \code{Classical.choice},
+\code{Quot.sound} and 47 \code{native\_decide} auxiliaries; the new ones are only
+\code{CertC13b.stepM} and the decimal step. A negative control ($M+1$) is rejected by Lean.
+
+\emph{Checks.} The one-command bundle \code{shannon-C13/} (\code{sh check.sh --install-elan})
+passed in a Linux clean room (empty HOME, no Lean installed), on the M4 Pro laptop and on the Mac
+mini. Its Python step reproduces BPZ's CertC13, CertC15, CertC19 and CertC7 exactly before
+evaluating our schedule. Separately, a review lane with the search code withheld wrote a new
+evaluator that reproduces BPZ's CertC7, C11, C13, C15, C19 and C23 and our $M$ digit for digit,
+and another lane re-derived the BaseC13 family sizes by brute force over all $13^6$ words. These
+lanes are instances of the same AI system, as in Section~\ref{sec:remarks}, item~5.
+
+\emph{Novelty check (2026-10-01).} Protti's and BPZ's repositories (tags, branches, releases,
+READMEs; Protti's HEAD after \code{v0.5.0} adds only documentation and two build-diagnostic Lean
+scripts, and \code{C13R8D522.lean} is unchanged), the arXiv page and API for 2607.29681 (v1
+only), arXiv API searches and the recent math.CO and cs.IT listings, Semantic Scholar citations of
+2607.29681, and Tao's optimization-constants page found no $C_{13}$ bound at or above Protti's. A
+same-day recheck at about 21:00Z on 2026-10-01 (GitHub refs, issues, PRs and forks; the arXiv
+API; Tao's page and its PRs; a general web search) found nothing new. arXiv was searched by
+metadata only, and unpublished work cannot be excluded.
+
+\emph{Size of the gain.} $2.48\cdot10^{-8}$, or about $3.9\cdot10^{-9}$ in $\log\T$, which is
+less than a tenth of Protti's step over BPZ and smaller than our $C_{15}$ and $C_{19}$ gains. The
+Lovász bound for $C_{13}$ (about $6.4042$) is far away. The same caveats as in
+Section~\ref{sec:remarks} apply, with more force: this is a certified record of very limited
+mathematical interest by itself.
+
 \subsection*{Acknowledgements} We thank Pjotr Buys, Sven Polak and Jeroen Zuiddam for releasing
 their Lean framework openly under the Apache License~2.0. Our patch is a derivative work under
-the same licence. The use of AI models and software is described in Section~\ref{sec:method}.
+the same licence. The use of AI models and software is described in Section~\ref{sec:method}. We thank
+Matthew Protti for his open, Lean-checked $C_{13}$ release, which set the target and made the
+exact comparison possible.
 
 \begin{thebibliography}{IRCR26}
 \bibitem[BMR+71]{BMR} L.~D. Baumert, R.~J. McEliece, E.~Rodemich, H.~C. Rumsey Jr., R.~Stanley, H.~Taylor, A combinatorial packing problem, in: \emph{Computers in Algebra and Number Theory} (Proc.\ SIAM-AMS Sympos.\ Appl.\ Math., New York, 1970), SIAM-AMS Proc., Vol.~IV, pp.~97--108, Amer.\ Math.\ Soc., Providence, RI, 1971. Zbl 0252.05016.
@@ -287,6 +384,7 @@ the same licence. The use of AI models and software is described in Section~\ref
 \bibitem[dBBZ24]{dBBZ} D.~de~Boer, P.~Buys, J.~Zuiddam, The asymptotic spectrum distance, graph limits, and the Shannon capacity, arXiv:2404.16763 (v1 2024, v2 2026).
 \bibitem[Gao26]{Gao} Y.~Gao, A recursive construction improving the lower bound on the Shannon capacity of $C_7$, arXiv:2607.27869 (2026).
 \bibitem[IRCR26]{IRCR} N.~Itty, C.~D. Rosin, C.~Carstensen, D.~Reichman, Improved lower bounds for the Shannon capacity of odd cycles, arXiv:2607.21517 (v2, 2026).
+\bibitem[Pro26]{Pro} M.~Protti, Layered independent-set constructions ($C_{11}$ capacity bounds and a uniform avoidance-profile compiler), \url{https://github.com/matthewprotti/c11-shannon-capacity-lower-bound}, tag \code{v0.5.0}, commit \code{dfaef37e60e55c55b1744d9badd1f26c5364c7d5} (2026-09-09).
 \end{thebibliography}
 
 \appendix

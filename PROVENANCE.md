@@ -98,3 +98,60 @@ at `aa21eeb` (checked by applying the patch to a fresh GitHub clone). `dist/` is
 * Not released: attempt-1 lanes, scraped web pages from the novelty search (only the report and
   query log are included), copies of third-party papers, and BPZ's repository itself (it is cloned
   from GitHub by `check.sh`).
+
+## v1.1 (2026-10-01): C13
+
+v1.1 adds files and edits the top-level documents; every v1.0 file under `artifact/`, `proofs/`,
+`dist/shannon-C15-C19-v1.0.tar.gz` and `dist/SHA256` is unchanged. The v1.1 material was prepared
+from research-repository commit `85621eb29985397fdbbfe61bcc0b387066c2353a` (C13 release material,
+same-day recheck); the C13 certificate itself was first committed in
+`bd805fe651fb804e39baf64eb7ace1558b962894` (lane T_c13). Sessions: the C13 work ran in attempt 3
+(coordinator session `86e5b329…`) and a parallel session (`9676a00d…`, which built the release
+bundle and ran the recheck), both with coordinator `claude-opus-5-5`.
+
+| release file | research file (at `85621eb`) | sha256 (release) | status |
+|---|---|---|---|
+| `artifact-C13/README.md` | `lanes/C13_release/shannon-C13/README.md` | `a2dea1371feccf0e…` | identical |
+| `artifact-C13/ENVIRONMENT.md` | `lanes/C13_release/shannon-C13/ENVIRONMENT.md` | `573c4f9b7ebbb4ef…` | edited for release (see below) |
+| `artifact-C13/certC13.patch` | `lanes/C13_release/shannon-C13/certC13.patch` = `lanes/T_c13/certC13.patch` | `7fde38bcb178fb74…` | identical |
+| `artifact-C13/check.sh` | `lanes/C13_release/shannon-C13/check.sh` (packaging edits of `lanes/T_c13/check_c13.sh`, see `artifact-C13/ENVIRONMENT.md`) | `cc8ac72a1a201e69…` | identical |
+| `artifact-C13/check_run_desk_linux.log` | `lanes/C13_release/shannon-C13/check_run_desk_linux.log` | `0216e49345c8219b…` | identical |
+| `artifact-C13/compare_protti.py` | `lanes/C13_release/shannon-C13/compare_protti.py` = `lanes/T_c13/compare_protti.py` | `790710c268b7b5f4…` | identical |
+| `artifact-C13/eval_c13.py` | `lanes/C13_release/shannon-C13/eval_c13.py` = `lanes/T_c13/eval_c13.py` | `4de5d55a0ea0005c…` | identical |
+| `artifact-C13/schedules/best_C13_SA1.json` | `lanes/C13_release/shannon-C13/schedules/best_C13_SA1.json` = `lanes/O_opt/best_C13_SA1.json` | `0843977febf93c1b…` | identical |
+| `proofs-C13/CertC13b.lean` | `lanes/T_c13/out/CertC13b.lean` | `cffbb8ab757a7f8d…` | identical |
+| `proofs-C13/CapCertC13b.lean` | `lanes/T_c13/out/CapCertC13b.lean` | `5c5558263bf78fde…` | identical |
+| `proofs-C13/DagCode3.lean` | `lanes/T_c13/lean/DagCode3.lean` | `fa3f760ff74d11f8…` | identical |
+| `review/C13/independent_evaluator_REPORT.md` | `review/C13_independent/REPORT.md` | `c49dc5c808c22718…` | identical |
+| `review/C13/V_c13_indep_REPORT.md` | `lanes/V_c13_indep/REPORT.md` | `d5892c1dd845aa01…` | identical |
+| `review/C13/check_c13_mini.log` | `review/C13_second_machine/check_c13_mini.log` | `6e2edbc7653c73e1…` | identical |
+| `review/C13/same_day_recheck_REPORT.md` | `lanes/C13_release/recheck/REPORT.md` | `b37445e92c3d9bf4…` | identical |
+| `tools/make_dist_c13.py` | `lanes/C13_release/make_dist_c13.py` | `a698aa6ffa9618e1…` | identical |
+| `HUMAN_INPUT.md` | `HUMAN_INPUT.md` | `79c690dcb4395e0d…` | edited for release (see below) |
+| `paper/note.md`, `paper/note.tex` | `paper/note.*` (v1.0 text) + `lanes/C13_release/note_C13_section.md` | `ec9074edcf4c77b8…`, `8bf2d08acd10fa35…` | merged for v1.1 (see below) |
+| `paper/note.pdf` | built from `paper/note.tex` | `2c2b67f3706af0ba…` | rebuilt (pdflatex, two passes) |
+| `RESULT.md`, `README.md`, `CITATION.cff`, `PROVENANCE.md`, `.gitignore`, `SHA256SUMS` | — | — | written or extended for the release |
+| `proofs-C13/README.md` | — | — | written for the release |
+| `dist/v1.1/shannon-C13-v1.1.tar.gz`, `dist/v1.1/SHA256` | — | — | produced from `artifact-C13/` by `tools/make_dist_c13.py artifact-C13 dist/v1.1`, deterministically |
+
+`proofs-C13/*.lean` are exactly the files that `artifact-C13/certC13.patch` creates in BPZ's
+repository at `aa21eeb` (checked by applying the patch to a fresh GitHub clone); the fourth file
+the patch creates, `DagTail.lean`, is byte-identical to `proofs/DagTail.lean`.
+
+Redactions and edits for v1.1:
+
+* `artifact-C13/ENVIRONMENT.md`: a hostname removed (as in v1.0); the stale remark that Protti's
+  HEAD after `v0.5.0` changed "documentation only" corrected (it also adds two build-diagnostic
+  Lean scripts; `C13R8D522.lean` is unchanged; see `review/C13/same_day_recheck_REPORT.md`); the
+  "not yet committed" sentence replaced by the research commits above. This file is not
+  hash-pinned by `check.sh`.
+* `HUMAN_INPUT.md`: the ssh host alias removed (as in v1.0), and a third party's email address
+  replaced by "(omitted here)".
+* `paper/note.*`: Section 8 (C13) merged from `note_C13_section.md` with its draft comments
+  removed, plus the edits that file listed (title, abstract sentence, status line, Section 5 bundle
+  command, reference [Pro26], acknowledgement) and one sentence crediting Itty, Rosin, Carstensen
+  and Reichman and Gao for the C13 base (from the same-day recheck).
+* Logs are verbatim. As in v1.0, they contain the local username in paths (`/home/griffinlong`,
+  `/Users/griffinlong`); no IP addresses, keys or tokens.
+* The same-day recheck report refers to an `evidence/` directory and to temporary clones; these are
+  kept in the research repository and are not released.

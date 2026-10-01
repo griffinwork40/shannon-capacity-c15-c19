@@ -1,4 +1,9 @@
-# Shannon capacity of C15 and C19: new lower bounds, checked in Lean
+# Shannon capacity of C15 and C19 (v1.0) and C13 (v1.1): new lower bounds, checked in Lean
+
+> **v1.1 (2026-10-01) adds Θ(C13) ≥ 6.302927071589786** in its own folder, `artifact-C13/`, next
+> to the unchanged v1.0 C15/C19 bundle. See [C13 (v1.1)](#c13-v11) below. The v1.0 files
+> (`artifact/`, `proofs/`, `dist/shannon-C15-C19-v1.0.tar.gz`, `dist/SHA256`) are byte-identical
+> to tag `v1.0`.
 
 **In plain language.** Imagine sending messages over a channel whose symbols sit in a ring, where
 each symbol can be mistaken for its two neighbours. The *Shannon capacity* of the ring is how much
@@ -60,6 +65,55 @@ fresh Lean process, and rejects `sorry` and any non-standard axiom. Details: `ar
 Without Lean (a few minutes; checks hashes, the patch and the independent Python re-derivation,
 but not the Lean proof): `cd artifact && sh check.sh --python-only`.
 
+## C13 (v1.1)
+
+```lean
+theorem ShannonBounds.CapCertC13b.shannonCapacity_cycleGraph_13_ge :
+    (6.302927071589786 : ℝ) ≤ shannonCapacity (SimpleGraph.cycleGraph 13)
+```
+
+The bound is M^(1/522) truncated to 15 decimals for an explicit integer M ≤ α(C13^⊠522) with 418
+digits; Lean also proves that the truncation is exact.
+
+**Prior bounds (quoted).**
+
+| source | bound | dimension |
+|---|---|---|
+| M. Protti, [matthewprotti/c11-shannon-capacity-lower-bound](https://github.com/matthewprotti/c11-shannon-capacity-lower-bound), tag `v0.5.0` = commit `dfaef37e60e55c55b1744d9badd1f26c5364c7d5` (2026-09-09), `shannon_checked_release/source/ShannonBounds/C13R8D522.lean`, theorem `capacity_lower` | 6.302927046770772 | 522 |
+| BPZ Lean repo, commit `aa21eeb`, README row `\| 13 \| 6.302926729310108 \| 522 \| 418 \|` | 6.302926729310108 | 522 |
+| BPZ paper arXiv:2607.29681 v1 | 6.302455083464 | |
+| **this repository, v1.1** | **6.302927071589786** | 522 |
+
+The gain over Protti is about 2.48·10⁻⁸ (M − N ≈ 4.72·10⁴¹¹, M/N − 1 ≈ 2.06·10⁻⁶; both have 418
+digits and live in the same dimension, so the comparison is one exact integer comparison, which the
+checker repeats). Protti's construction keeps BPZ's base and schedule and adds guarded typed cells
+at three nodes; ours uses no typed cells, only a different substitution schedule over BPZ's own
+gadgets (base port system, tables S2b and S3c, terminal code K3a). BPZ's C13 base is a port system
+on an independent set of size 62530 in C13^⊠6, the size first found by Itty, Rosin, Carstensen and
+Reichman (arXiv:2607.21517); BPZ's method builds on Gao (arXiv:2607.27869) and on Itty et al.
+
+**Check it (one command):**
+
+```sh
+cd artifact-C13 && sh check.sh --install-elan
+```
+
+or unpack `dist/v1.1/shannon-C13-v1.1.tar.gz` (sha256 in `dist/v1.1/SHA256`) and run
+`cd shannon-C13 && sh check.sh --install-elan`. Same prerequisites as above. The script clones BPZ
+at `aa21eeb`, applies `artifact-C13/certC13.patch` (four new files, four import lines), runs the
+independent Python re-derivation (BPZ's CertC13, CertC15, CertC19 and CertC7 as positive
+controls), clones Protti's tag `v0.5.0` and checks M > N exactly, builds with Lean 4.32.2, re-checks
+the statement and axioms in a fresh Lean process, and ends with `ALL CHECKS PASSED`. Without Lean:
+`cd artifact-C13 && sh check.sh --python-only`. Details: `artifact-C13/README.md`,
+`artifact-C13/ENVIRONMENT.md`; the Lean files for reading are in `proofs-C13/`; reviews and the
+same-day literature recheck are in `review/C13/`; the note's Section 8 describes the result.
+
+`certC13.patch` and `certL2.patch` are alternatives, not a stack: each applies on its own to a clean
+`aa21eeb`. Trust base as below (47 `native_decide` auxiliary axioms for C13). The literature check
+(2026-10-01, rechecked about 21:00Z the same day) found no C13 bound at or above Protti's other than
+his own; arXiv was searched by metadata only, and unpublished work cannot be excluded. **No external
+party has reproduced the C13 result yet.**
+
 ## What is new, and what is not
 
 * **New:** only the *substitution schedules* (the order in which BPZ's gadgets are combined),
@@ -112,18 +166,23 @@ three test machines belong to one person. **No external party has reproduced the
 
 | path | contents |
 |---|---|
+| `artifact-C13/` | **v1.1** C13 check bundle: `check.sh`, `certC13.patch`, `eval_c13.py`, `compare_protti.py`, `schedules/best_C13_SA1.json`, `README.md`, `ENVIRONMENT.md`, clean-room log |
+| `dist/v1.1/` | `shannon-C13-v1.1.tar.gz` (the C13 bundle packed as `shannon-C13/…`) and its `SHA256` |
+| `proofs-C13/` | the three new C13 Lean files created by `certC13.patch` (plus `proofs/DagTail.lean`), for reading |
+| `review/C13/` | C13 independent-evaluator report, base re-derivation and literature check, Mac mini log, same-day recheck |
 | `artifact/` | the canonical, self-contained check bundle: `check.sh`, `certL2.patch`, `eval_dag.py`, `schedules/*.json`, `README.md`, `ENVIRONMENT.md`, clean-room log |
 | `dist/` | `shannon-C15-C19-v1.0.tar.gz` (the bundle packed as `shannon-C15-C19/…`) and its `SHA256` |
 | `proofs/` | the five Lean files created by the patch, for reading (see `proofs/README.md`) |
 | `method/` | the generator and the schedule-search code (not part of the trust base; see `method/README.md`) |
 | `review/` | red-team report, independent-evaluator report, novelty search report and query log, second-machine report |
 | `logs/` | clean-room Linux log, laptop log, negative-control build log, Mac mini build logs |
-| `paper/` | the note (`note.md`, `note.tex`, `note.pdf`); draft, not submitted |
+| `paper/` | the note (`note.md`, `note.tex`, `note.pdf`; v1.1 adds Section 8 on C13); draft, not submitted |
 | `RESULT.md` | summary of the result as recorded at the end of the work |
 | `HUMAN_INPUT.md` | log of every human input |
 | `PROVENANCE.md` | research-repository commits and tags, sessions, models, byte-identity table, redactions |
 | `LICENSE`, `NOTICE` | Apache-2.0 (code and patch); CC BY 4.0 (paper text) |
 | `tools/make_dist.py` | rebuilds `dist/` from `artifact/` byte for byte (deterministic tarball) |
+| `tools/make_dist_c13.py` | `python3 tools/make_dist_c13.py artifact-C13 dist/v1.1` rebuilds the C13 tarball byte for byte |
 | `CITATION.cff` | citation metadata |
 | `SHA256SUMS` | sha256 of every tracked file except itself |
 
@@ -134,10 +193,11 @@ which the patch is a derivative. Paper text in `paper/`: CC BY 4.0 (see `NOTICE`
 
 ## How to cite
 
-Griffin Long, *Slightly improved lower bounds for the Shannon capacity of C15 and C19, formalised in
-the Buys–Polak–Zuiddam Lean framework*, version 1.0.0 (2026),
+Griffin Long, *Slightly improved lower bounds for the Shannon capacity of C13, C15 and C19, formalised in
+the Buys–Polak–Zuiddam Lean framework*, version 1.1.0 (2026; v1.1 adds C13),
 https://github.com/griffinwork40/shannon-capacity-c15-c19. Machine-readable: `CITATION.cff`.
-Please also cite BPZ (arXiv:2607.29681 and their Lean repository), on whose work this rests.
+Please also cite BPZ (arXiv:2607.29681 and their Lean repository), on whose work this rests, and,
+for C13, Protti's repository (tag `v0.5.0`), whose bound this improves.
 
 ## Contact
 

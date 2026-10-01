@@ -1,6 +1,6 @@
 # Result of discovery attempt 2 (2026-10-01)
 
-*Public edition for the release repository. Paths are relative to this repository unless marked
+*Public edition for the release repository (v1.1 adds the C13 addendum at the end). Paths are relative to this repository unless marked
 "research repository" (private; see `PROVENANCE.md`). Mathematical content is unchanged.*
 
 **In plain words.** The Shannon capacity of a graph is the most information per symbol that can
@@ -98,3 +98,50 @@ chose the lanes and built the search, the evaluators and the Lean certificates. 
 listed in HUMAN_INPUT.md: the goal statement, `/gather`, a resume after a usage limit, and "whatever u
 think is best proceed". BPZ's work, data and Lean framework are the foundation. Research-repository commits and tags:
 see `PROVENANCE.md`.
+
+# Addendum v1.1 (2026-10-01): C13
+
+| n | prior best (quoted) | new, Lean-certified | package |
+|---|---|---|---|
+| 13 | 6.302927046770772 (M. Protti, github.com/matthewprotti/c11-shannon-capacity-lower-bound, tag `v0.5.0` = commit `dfaef37e60e55c55b1744d9badd1f26c5364c7d5`, 2026-09-09, file `shannon_checked_release/source/ShannonBounds/C13R8D522.lean`, theorem `capacity_lower`, dimension 522) | **6.302927071589786** (CapCertC13b, dimension 522) | `artifact-C13/` |
+
+Protti's theorem, quoted: `capacity_lower : (6.302927046770772 : ℝ) ≤ shannonCapacity (SimpleGraph.cycleGraph 13)`,
+with `alpha_ge : N ≤ (strongPower (SimpleGraph.cycleGraph 13) 522).indepNum`. It improved BPZ's
+repository value 6.302926729310108 (README row "| 13 | 6.302926729310108 | 522 | 418 |", commit
+aa21eeb). BPZ's paper arXiv:2607.29681 v1 states 6.302455083464.
+
+* **Theorem (verbatim):** `ShannonBounds.CapCertC13b.shannonCapacity_cycleGraph_13_ge :
+  (6.302927071589786 : ℝ) ≤ shannonCapacity (SimpleGraph.cycleGraph 13)`. Also proved:
+  `alpha_strongPower_ge : M ≤ α(C13^⊠522)` (M has 418 digits), `tight` (the decimal is the exact
+  truncation of M^(1/522)), `improves` (> BPZ) and `improves_1` (> Protti).
+* **Exact comparison:** M and Protti's N both have 418 digits; M > N, M − N ≈ 4.7204·10⁴¹¹,
+  M/N − 1 ≈ 2.06·10⁻⁶, rate gain ≈ 2.48·10⁻⁸. `check.sh` clones Protti's tag and repeats it.
+* **What is new:** only the substitution schedule (49 nodes over BPZ's tables S2b and S3c, atoms
+  R1 and Rf, terminal code K3a on exponents 34, 36, 17; E = 87, p = 522), found by simulated
+  annealing over BPZ's C13 grammar (research repository lane O). No typed cells (Protti's change);
+  combining the two was not tried. BPZ's C13 base is a port system on an independent set of size
+  62530 in C13^⊠6, the size first found by Itty, Rosin, Carstensen and Reichman (arXiv:2607.21517);
+  BPZ's method builds on Gao (arXiv:2607.27869) and on Itty et al.
+* **Trust base:** as for C15/C19: Lean kernel, Mathlib, `native_decide`. `#print axioms`:
+  `propext`, `Classical.choice`, `Quot.sound` and 47 `native_decide` auxiliaries; no `sorryAx`.
+
+## Verification performed for C13
+1. One-command bundle `artifact-C13/` (`sh check.sh --install-elan`): ALL CHECKS PASSED in a Linux
+   clean room (empty HOME, environment cleared, no Lean or caches; `artifact-C13/check_run_desk_linux.log`).
+2. The predecessor checker (same checks) passed from fresh clones on the M4 Pro laptop and on the
+   Mac mini (`review/C13/check_c13_mini.log`).
+3. Negative control: with M+1 in place of M, Lean rejects `CertC13b.lean` at `stepM` (research
+   repository `lanes/T_c13/logs/build_neg_C13b.log`).
+4. Independent evaluator (search and generator code withheld): reproduces BPZ's CertC7, C11, C13,
+   C15, C19 and C23 and our M digit for digit; patch audit; own build
+   (`review/C13/independent_evaluator_REPORT.md`).
+5. Second independent lane: BaseC13 family sizes re-derived by brute force over all 13⁶ words; M
+   and the comparison with Protti recomputed; literature check (`review/C13/V_c13_indep_REPORT.md`).
+6. Same-day recheck (about 21:00Z, 2026-10-01): Protti and BPZ refs, issues, PRs, forks; arXiv API;
+   Tao's page and PRs; GitHub search; a general web search. Nothing new; Protti's typed-cell
+   description checked against his sources (`review/C13/same_day_recheck_REPORT.md`).
+7. Python-only re-check of the release-repository copy (`sh check.sh --python-only`): passed.
+
+All reviewer lanes are instances of the same AI system, and all machines belong to one person. No
+external party has reproduced the C13 result yet. Arxiv was searched by metadata only; unpublished
+work cannot be excluded.

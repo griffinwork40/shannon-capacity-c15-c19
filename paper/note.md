@@ -1,8 +1,8 @@
-# Slightly improved lower bounds for the Shannon capacity of C15 and C19, formalised in the Buys–Polak–Zuiddam Lean framework
+# Slightly improved lower bounds for the Shannon capacity of C13, C15 and C19, formalised in the Buys–Polak–Zuiddam Lean framework
 
 **Author:** Griffin Long
 
-**Status:** DRAFT, not submitted or posted anywhere. Dated 2026-10-01.
+**Status:** DRAFT, not submitted or posted anywhere. v1.1 addendum dated 2026-10-01.
 
 ## Abstract
 
@@ -14,6 +14,8 @@ code and the Lean framework. Only the substitution schedules are new. They were 
 automated search over BPZ's schedule space, run by the AI agent agent-afk. Both bounds are Lean 4
 theorems, delivered as a patch that only adds files to BPZ's repository. The trust base is the
 same as BPZ's, including `native_decide`. One command reproduces the check from a fresh clone.
+An addendum proves Θ(C13) ≥ 6.302927071589786, about 2.5·10⁻⁸ above M. Protti's Lean-checked
+6.302927046770772, by the same method.
 
 ## 1. Previous bounds
 
@@ -190,6 +192,15 @@ The script:
 It ends with `ALL CHECKS PASSED` (exit 0). It needs a POSIX shell, git, curl, python3 ≥ 3.8 and
 about 8 GB of disk.
 
+The C13 result of Section 8 has its own bundle, checked the same way (it also compares exactly
+with Protti's published integer):
+
+```sh
+cd shannon-C13 && sh check.sh --install-elan
+```
+
+In the public repository it is `artifact-C13/` (tag `v1.1`, tarball `shannon-C13-v1.1.tar.gz`).
+
 **Provenance.** The research repository has the annotated tag `c15-c19-record-v1` (tag object
 `7c2dff03…`) on commit `5737f31a6afb08c579c042b5c03991fe3d703057`, which contains `certL2.patch`.
 An earlier tag, `c19-record-v1` on `86c62d94…`, holds a first C19 certificate,
@@ -296,12 +307,88 @@ comes from finite mixing, not from a better limit.
    mathematical interest by themselves. The defensible contribution is the certified values plus
    a reproducible, fully mechanised workflow.
 
+## 8. Addendum (v1.1): the 13-cycle
+
+**Theorem.** Θ(C13) ≥ 6.302927071589786.
+
+```lean
+theorem ShannonBounds.CapCertC13b.shannonCapacity_cycleGraph_13_ge :
+    (6.302927071589786 : ℝ) ≤ shannonCapacity (SimpleGraph.cycleGraph 13)
+```
+
+As in Section 2, `shannonCapacity` is BPZ's definition and `cycleGraph` is Mathlib's. The bound
+comes from an explicit integer M (418 digits) with M ≤ α(C13^⊠522), proved as
+`CapCertC13b.alpha_strongPower_ge`, and the decimal is the exact truncation of M^{1/522}
+(`tight`).
+
+**Previous bounds.** BPZ's repository at `aa21eeb` gives 6.302926729310108 in C13^⊠522 (README
+row `| 13 | 6.302926729310108 | 522 | 418 |`); their v1 paper gives 6.302455083464. M. Protti
+[Pro26] improved the repository value to 6.302927046770772 (tag `v0.5.0`, commit `dfaef37`, file
+`C13R8D522.lean`, theorem `capacity_lower`), also in Lean and also in dimension 522. His
+construction keeps BPZ's base and schedule and adds guarded typed cells at three nodes.
+
+| bound | source | dimension | gain over previous |
+|---|---|---|---|
+| 6.302455083464 | BPZ v1 paper | | |
+| 6.302926729310108 | BPZ `aa21eeb` | 522 | |
+| 6.302927046770772 | Protti `v0.5.0` | 522 | 3.17·10⁻⁷ |
+| **6.302927071589786** | this note | 522 | **2.48·10⁻⁸** |
+
+**Exact comparison.** Since all three constructions live in C13^⊠522, comparing the bounds is
+comparing integers. Our M and Protti's literal N both have 418 digits, and M > N with
+M − N ≈ 4.7204·10⁴¹¹ and M/N − 1 ≈ 2.06·10⁻⁶. To more digits the two roots are
+6.30292707158978611017… and 6.30292704677077232196…. The checker clones Protti's tag and does this
+comparison itself.
+
+**Construction.** Same base as BPZ's `CertC13`: their rich port system in C13^⊠6 with family sizes
+w0 = (B, N, A, D, O, H, V) = (61516, 60502, 1014, 1014, 1014, 1014, 1014). The underlying
+independent set in C13^⊠6 has size 62530, the size first found by Itty, Rosin, Carstensen and
+Reichman [IRCR26]; BPZ's method builds on Gao [Gao26] and on [IRCR26]. The schedule uses only
+BPZ's tables S2b and S3c, the atoms R1 and Rf, and BPZ's arity-3 terminal code K3a. It has 49
+distinct nodes and no iterated tails; K3a is applied to three nodes of exponents (34, 36, 17), so
+E = 87 and p = 6·87 = 522. The schedule is listed in full in the header of `CertC13b.lean` and in
+`schedules/best_C13_SA1.json`. It was found by the simulated annealing of Section 6, run over
+BPZ's C13 grammar and scored exactly. It uses no typed cells, so it is a different kind of change
+from Protti's: his keeps BPZ's schedule and enlarges families at three of its nodes with
+guarded typed cells; ours replaces the schedule. The two may well
+combine; we have not tried.
+
+**Lean.** The patch `certC13.patch` (sha256 `7fde38bc…01138`) on `aa21eeb` adds `DagTail.lean`
+(byte-identical to the v1.0 one), `DagCode3.lean` (arity-3 analogues `code3`, `sum_code3` of
+`DagTail.code4`, `sum_code4`), `CertC13b.lean` and `CapCertC13b.lean`, and four import lines. It
+is an alternative to `certL2.patch`, not stacked on it. `#print axioms` lists `propext`,
+`Classical.choice`, `Quot.sound` and 47 `native_decide` auxiliaries; the new ones are only
+`CertC13b.stepM` and the decimal step. A negative control (M+1) is rejected by Lean.
+
+**Checks.** The one-command bundle `shannon-C13/` (`sh check.sh --install-elan`) passed in a
+Linux clean room (empty HOME, no Lean installed), on the M4 Pro laptop and on the Mac mini. Its
+Python step reproduces BPZ's CertC13, CertC15, CertC19 and CertC7 exactly before evaluating our
+schedule. Separately, a review lane with the search code withheld wrote a new evaluator that
+reproduces BPZ's CertC7, C11, C13, C15, C19 and C23 and our M digit for digit, and another lane
+re-derived the BaseC13 family sizes by brute force over all 13⁶ words. These lanes are instances
+of the same AI system, as in Section 7, item 5.
+
+**Novelty check (2026-10-01).** Protti's and BPZ's repositories (tags, branches, releases,
+READMEs; Protti's HEAD after `v0.5.0` adds only documentation and two build-diagnostic Lean
+scripts, and `C13R8D522.lean` is unchanged), the arXiv page and API for
+2607.29681 (v1 only), arXiv API searches and the recent math.CO and cs.IT listings, Semantic
+Scholar citations of 2607.29681, and Tao's optimization-constants page found no C13 bound at or
+above Protti's. A same-day recheck at about 21:00Z on 2026-10-01 (GitHub refs, issues, PRs and
+forks; the arXiv API; Tao's page and its PRs; a general web search) found nothing new. arXiv was
+searched by metadata only, and unpublished work cannot be excluded.
+
+**Size of the gain.** 2.48·10⁻⁸, or about 3.9·10⁻⁹ in log Θ, which is less than a tenth of
+Protti's step over BPZ and smaller than our C15 and C19 gains. The Lovász bound for C13 (about
+6.4042) is far away. The same caveats as in Section 7 apply, with more force: this is a certified
+record of very limited mathematical interest by itself.
+
 ## Acknowledgements
 
 We thank Pjotr Buys, Sven Polak and Jeroen Zuiddam for releasing their Lean framework openly.
 This note would not exist without it. Their repository is under the Apache License 2.0. Our patch
 is a derivative work and is offered under the same licence. The use of AI models and software is
-described in the methodology section above.
+described in the methodology section above. We thank Matthew Protti for his open, Lean-checked
+C13 release, which set the target and made the exact comparison possible.
 
 ## References
 
@@ -312,6 +399,7 @@ described in the methodology section above.
 * [Gao26] Y. Gao. A recursive construction improving the lower bound on the Shannon capacity of C7. arXiv:2607.27869 (2026).
 * [IRCR26] N. Itty, C. D. Rosin, C. Carstensen, D. Reichman. Improved lower bounds for the Shannon capacity of odd cycles. arXiv:2607.21517 (v2, 2026).
 * [Lov79] L. Lovász. On the Shannon capacity of a graph. *IEEE Trans. Inform. Theory* 25(1) (1979) 1–7. doi:10.1109/TIT.1979.1055985.
+* [Pro26] M. Protti. Layered independent-set constructions (C11 capacity bounds and a uniform avoidance-profile compiler). github.com/matthewprotti/c11-shannon-capacity-lower-bound, tag v0.5.0, commit dfaef37e60e55c55b1744d9badd1f26c5364c7d5 (2026-09-09).
 * [Sha56] C. E. Shannon. The zero error capacity of a noisy channel. *IRE Trans. Inform. Theory* 2(3) (1956) 8–19. doi:10.1109/TIT.1956.1056798.
 
 ## Appendix A. Schedules in full

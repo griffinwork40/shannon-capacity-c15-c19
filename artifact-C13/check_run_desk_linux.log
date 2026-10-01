@@ -1,0 +1,457 @@
+
+==> check.sh started 2026-10-01T18:41:35Z on Linux x86_64
+    bundle: /home/griffinlong/cleanroom_c13/shannon-C13
+    work dir: /home/griffinlong/cleanroom_c13/shannon-C13/c13-check    LEAN_NUM_THREADS=4  nice=5
+    git version 2.43.0; Python 3.12.3
+
+==> 0. bundle fingerprint
+    certC13.patch  7fde38bcb178fb747be18bb9deb63f303225c2cc0b7e1d566281ad47fb301138  OK
+    eval_c13.py  4de5d55a0ea0005c932fb9aa1bfab3bde3059bd9143c9fc3db75f934ba4de4ec  OK
+    compare_protti.py  790710c268b7b5f442d192d8d863cfd039cdf00b3066e2332826713d17c18381  OK
+    schedules/best_C13_SA1.json  0843977febf93c1be1932e43a7e3cb34f382ec3b672f85e8ac9847d91eba7407  OK
+
+==> 1. cloning https://github.com/spectra-research/shannon-capacity-lean
+Cloning into '/home/griffinlong/cleanroom_c13/shannon-C13/c13-check/shannon-capacity-lean'...
+HEAD is now at aa21eeb Update the bounds
+    HEAD = aa21eeb12b75b0413d3fa9fb4208b5d0bf2c4d65 (2026-08-10 11:10:00 +0200 Update the bounds)
+    licence:  Apache License  Version 2.0, January 2004 
+    lean-toolchain: leanprover/lean4:v4.32.2
+    BPZ README row: | 13 | 6.302926729310108 | 522 | 418 | 
+
+==> 2. applying certC13.patch
+Checking patch ShannonBounds/CapCertC13b.lean...
+Checking patch ShannonBounds/CertC13b.lean...
+Checking patch ShannonBounds/DagCode3.lean...
+Checking patch ShannonBounds/DagTail.lean...
+Checking patch ShannonBounds.lean...
+    ShannonBounds/DagTail.lean sha256 OK
+    ShannonBounds/DagCode3.lean sha256 OK
+    ShannonBounds/CertC13b.lean sha256 OK
+    ShannonBounds/CapCertC13b.lean sha256 OK
+    only change to BPZ files: 4 import lines added to ShannonBounds.lean
+    added files declare no axioms and use no unsafe/opaque/implemented_by/extern/csimp/macros
+    new files: ShannonBounds/CapCertC13b.lean ShannonBounds/CertC13b.lean ShannonBounds/DagCode3.lean ShannonBounds/DagTail.lean 
+
+==> 3. independent Python evaluator (stdlib only) on the fresh clone
+sep: 22 ordered pairs, symmetric, irreflexive
+sigma = {'B': 'B', 'N': 'N', 'A': 'D', 'D': 'A', 'O': 'O', 'H': 'V', 'V': 'H'} preserves sep: True
+  table S2a q=2 words=20 admissible(hin+hcross)=True
+  table S2b q=2 words=17 admissible(hin+hcross)=True
+  table S3a q=3 words=58 admissible(hin+hcross)=True
+  table S3b q=3 words=45 admissible(hin+hcross)=True
+  table S3c q=3 words=48 admissible(hin+hcross)=True
+  table S3d q=3 words=46 admissible(hin+hcross)=True
+  table S3e q=3 words=53 admissible(hin+hcross)=True
+  table S3f q=3 words=47 admissible(hin+hcross)=True
+  table S3g q=3 words=47 admissible(hin+hcross)=True
+  table S3h q=3 words=45 admissible(hin+hcross)=True
+  code K3a r=3 words=19 pairwise separated=True
+  code K4a r=4 words=49 pairwise separated=True
+  code K4b r=4 words=57 pairwise separated=True
+BASE C13: recomputed families {'B': 61516, 'N': 60502, 'A': 1014, 'D': 1014, 'O': 1014, 'H': 1014, 'V': 1014} params {'N': 62530, 'd': 1014, 'L': 62530, 'source': 'BaseC13.lean theorem statements'}; == CertC13.w0: True
+BASE C15: recomputed families {'B': 2839, 'N': 2833, 'A': 6, 'D': 3, 'O': 3, 'H': 3, 'V': 3} params {'N': 2842, 'd': 3, 'L': 2842}; == CertC15.w0: True
+BASE C19: recomputed families {'B': 7664, 'N': 7661, 'A': 3, 'D': 2, 'O': 2, 'H': 2, 'V': 2} params {'N': 7666, 'd': 2, 'L': 7666}; == CertC19.w0: True
+CONTROL CertC13: 26 nodes, all node literals match: True; M == Lean M: True; p=522 (README 522); digits=418 (README 418); root=6.302926729310108 (README 6.302926729310108) -> PASS
+CONTROL CertC15: 23 nodes, all node literals match: True; M == Lean M: True; p=3664 (README 3664); digits=3164 (README 3164); root=7.301628695930103 (README 7.301628695930103) -> PASS
+CONTROL CertC19: 16 nodes, all node literals match: True; M == Lean M: True; p=11856 (README 11856); digits=11514 (README 11514); root=9.357200030000796 (README 9.357200030000796) -> PASS
+CONTROL CertC7: 8 nodes, all node literals match: True; M == Lean M: True; p=500 (README 500); digits=257 (README 257); root=3.258827985920007 (README 3.258827985920007) -> PASS
+
+SCHEDULE /home/griffinlong/cleanroom_c13/shannon-C13/schedules/best_C13_SA1.json (n=13, code K3a)
+  tables used: ['S2b', 'S3c']; atoms used: ['R1', 'Rf']
+  distinct internal nodes (memoised, n=0 tails collapsed): 49; tail lengths: []
+  terminal child exponents eT = [34, 36, 17], E = 87 (in G = C13^6), dim p = 522
+  M digits = 418, sha256(str M) = cac3a5bdf4a4f34045c3a80c52bb1d651e5a0ff2a007b3f13efb6a9ab0914fba
+  root trunc15 = 6.302927071589786 ; a^p <= M*10^(15p): True ; (a+1)^p > M*10^(15p): True
+  float_rate in JSON: 6.302927071589786
+  vs Lean CertC13b.lean:
+    Lean M literal digits=418; Lean M == my M (digit for digit): True
+    my re-evaluation of the Lean Sizes DAG == Lean M: True; == my JSON M: True
+    Lean distinct nodes=49; Lean eT=[34, 36, 17] E=87; structural problems (S/children/exponents/tail args vs Rn defs): none
+    terminal sizes vectors equal: True
+    CapCertC13b.lean: iso Cyc13^522^E with d=6 E=87; tight a=6302927071589786 p=522; stated 6.302927071589786 -> matches mine: True
+    C13: Python M == Lean CertC13b.M digit for digit (418 digits, sha256 cac3a5bdf4a4f34045c3a80c52bb1d651e5a0ff2a007b3f13efb6a9ab0914fba)
+
+==> 3b. exact comparison with the prior bound (Protti v0.5.0)
+    Protti v0.5.0 = dfaef37e60e55c55b1744d9badd1f26c5364c7d5; HEAD of default branch: 6a0235fab88c49a2499d8fb8b9daa621909b24de
+    Protti tags: v0.1.0 v0.2.0 v0.3.0 v0.4.0 v0.5.0 
+Protti N: 418 digits, dim 522; ours M: 418 digits, dim 522
+EXACT: M^522 > N^522 (our root strictly larger): True
+Protti decimal 6.302927046770772: P^q <= N*10^(15q): True; (P+1)^q > N*10^(15q): True
+    Python check OK
+
+==> 4. locating lake
+info: downloading installer
+warning: $HOME differs from euid-obtained home directory: you may be using sudo
+info: downloading https://releases.lean-lang.org/lean4/v4.32.2/lean-4.32.2-linux.tar.zst
+info: installing /home/griffinlong/cleanroom_c13/home/.elan/toolchains/leanprover--lean4---v4.32.2
+    Lake version 5.0.0-src+f3b06c7 (Lean version 4.32.2)
+    Lean version matches lean-toolchain (4.32.2)
+
+==> 5a. lake exe cache get (prebuilt Mathlib)
+info: mathlib: cloning https://github.com/leanprover-community/mathlib4.git
+info: mathlib: checking out revision '905b95818eb32af7874a58b427f50c1711a5e96c'
+info: plausible: cloning https://github.com/leanprover-community/plausible
+info: plausible: checking out revision 'e12c1910fe855cbfc38803cd4e55543906d5fa62'
+info: LeanSearchClient: cloning https://github.com/leanprover-community/LeanSearchClient
+info: LeanSearchClient: checking out revision 'c5d5b8fe6e5158def25cd28eb94e4141ad97c843'
+info: importGraph: cloning https://github.com/leanprover-community/import-graph
+info: importGraph: checking out revision '7e9612bf0b9ee66db3cb5b9988a35afc706f5a12'
+info: proofwidgets: cloning https://github.com/leanprover-community/ProofWidgets4
+info: proofwidgets: checking out revision '6e311e2a844da9b2cc3971187df2fe0066947b93'
+info: aesop: cloning https://github.com/leanprover-community/aesop
+info: aesop: checking out revision 'a7dbf0c63b694e47f425f3dcddbc0e178bb432d3'
+info: Qq: cloning https://github.com/leanprover-community/quote4
+info: Qq: checking out revision '38d591e778f100aec9762bb582f9c7f55f50e9dc'
+info: batteries: cloning https://github.com/leanprover-community/batteries
+info: batteries: checking out revision '023ce7d62a0531e22a5331e20b587817a80d49ff'
+info: Cli: cloning https://github.com/leanprover/lean4-cli
+info: Cli: checking out revision '88679d088c9720c27ebdf2ba4dafe17341747f94'
+✔ [1/5] Built Cache.Cli (1.7s)
+✔ [5/26] Built Cache.Lean (1.8s)
+✔ [6/26] Built Cache.Infra (826ms)
+✔ [7/26] Built Batteries.Tactic.OpenPrivate (1.9s)
+✔ [8/26] Built Cache.Cli:c.o (2.1s)
+✔ [9/26] Built Cache.Lean:c.o (2.1s)
+✔ [10/26] Built Cache.Infra:c.o (1.4s)
+✔ [11/26] Built Batteries.Tactic.OpenPrivate:c.o (1.8s)
+✔ [12/26] Built Cache.IO (2.3s)
+✔ [13/26] Built Cache.Hashing (1.1s)
+✔ [14/26] Built Cache.Hashing:c.o (993ms)
+✔ [15/26] Built Cache.IO:c.o (2.6s)
+✔ [16/26] Built Cache.Requests (3.4s)
+✔ [17/26] Built Cache.Marker (764ms)
+✔ [18/26] Built Cache.Marker:c.o (267ms)
+✔ [19/26] Built Cache.Query (1.1s)
+✔ [20/26] Built Cache.Query:c.o (534ms)
+✔ [21/26] Built Cache.Warning (862ms)
+✔ [22/26] Built Cache.Warning:c.o (367ms)
+✔ [23/26] Built Cache.Requests:c.o (4.3s)
+✔ [24/26] Built Cache.Main (2.0s)
+✔ [25/26] Built Cache.Main:c.o (1.5s)
+✔ [26/26] Built cache:exe (3.9s)
+Current branch: HEAD
+Using cache from origin: (some leanprover-community/mathlib4)
+Attempting to download 8639 file(s) from leanprover-community/mathlib4 cache at https://lakecache.blob.core.windows.net/mathlib4-master
+Downloaded: 0 file(s) [attempted 8639/8639 = 100%, 4 KB/s], Decompressed: 0
+Attempting to download 8639 file(s) from leanprover-community/mathlib4 cache at https://lakecache.blob.core.windows.net/mathlib4
+Downloaded: 8639 file(s) [attempted 8639/8639 = 100%, 46 KB/s], Decompressed: 4195
+Decompressed 8639 file(s)
+Already decompressed 8639 file(s)
+    Mathlib revision (lake-manifest.json): 905b95818eb32af7874a58b427f50c1711a5e96c
+
+==> 5b. lake build ShannonBounds.CapCertC13b
+✔ [2043/2064] Built ShannonBounds.Lift (232s)
+✔ [2044/2064] Built ShannonBounds.BaseC13Data (16s)
+✔ [2045/2064] Built ShannonBounds.BaseC13Sets (1.7s)
+✔ [2046/2064] Built ShannonBounds.Defs (226s)
+✔ [2047/2064] Built ShannonBounds.Decimal (5.0s)
+✔ [2048/2064] Built ShannonBounds.Flatten (6.1s)
+⚠ [2049/2064] Built ShannonBounds.Layered (8.3s)
+warning: ShannonBounds/Layered.lean:58:0: automatically included section variable(s) unused in theorem `ShannonBounds.card_wordSet`:
+  [Fintype V]
+  [DecidableEq V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [DecidableEq V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: ShannonBounds/Layered.lean:64:0: automatically included section variable(s) unused in theorem `ShannonBounds.isIndepSet_wordSet`:
+  [Fintype V]
+  [DecidableEq V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [DecidableEq V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: ShannonBounds/Layered.lean:76:0: automatically included section variable(s) unused in theorem `ShannonBounds.sep_wordSet`:
+  [Fintype V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: ShannonBounds/Layered.lean:103:0: automatically included section variable(s) unused in theorem `ShannonBounds.card_substSet`:
+  [DecidableEq A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: ShannonBounds/Layered.lean:230:8: automatically included section variable(s) unused in theorem `ShannonBounds.Realisation.w_mapIso`:
+  [Fintype V]
+  [DecidableEq V]
+  [DecidableEq A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [DecidableEq V] [DecidableEq A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: ShannonBounds/Layered.lean:261:0: automatically included section variable(s) unused in theorem `ShannonBounds.card_multiWordSet`:
+  [Fintype V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: ShannonBounds/Layered.lean:268:0: automatically included section variable(s) unused in theorem `ShannonBounds.isIndepSet_multiWordSet`:
+  [Fintype V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: ShannonBounds/Layered.lean:280:0: automatically included section variable(s) unused in theorem `ShannonBounds.sep_multiWordSet`:
+  [Fintype V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: ShannonBounds/Layered.lean:298:0: automatically included section variable(s) unused in theorem `ShannonBounds.card_multiSubstSet`:
+  [DecidableEq A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: ShannonBounds/Layered.lean:390:0: automatically included section variable(s) unused in theorem `ShannonBounds.card_codeSet`:
+  [DecidableEq A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: ShannonBounds/Layered.lean:425:0: automatically included section variable(s) unused in theorem `ShannonBounds.card_multiCodeSet`:
+  [DecidableEq A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [DecidableEq A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: ShannonBounds/Layered.lean:520:0: automatically included section variable(s) unused in theorem `ShannonBounds.isIndepSet_image_symm`:
+  [Fintype V]
+  [DecidableRel G.Adj]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [DecidableRel G.Adj] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2050/2064] Built ShannonBounds.PortRealisation (3.6s)
+warning: ShannonBounds/PortRealisation.lean:72:0: automatically included section variable(s) unused in theorem `ShannonBounds.RichPortSystem.isIndepSet_image_ep`:
+  [Fintype α]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype α] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: ShannonBounds/PortRealisation.lean:95:0: automatically included section variable(s) unused in theorem `ShannonBounds.RichPortSystem.sep_symm_of`:
+  [Fintype α]
+  [DecidableEq α]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype α] [DecidableEq α] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: ShannonBounds/PortRealisation.lean:99:0: automatically included section variable(s) unused in theorem `ShannonBounds.RichPortSystem.sep_core_ports`:
+  [Fintype α]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype α] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: ShannonBounds/PortRealisation.lean:106:0: automatically included section variable(s) unused in theorem `ShannonBounds.RichPortSystem.sep_core_transversal`:
+  [Fintype α]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype α] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: ShannonBounds/PortRealisation.lean:115:0: automatically included section variable(s) unused in theorem `ShannonBounds.RichPortSystem.sep_neutral_footprint`:
+  [Fintype α]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype α] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: ShannonBounds/PortRealisation.lean:125:0: automatically included section variable(s) unused in theorem `ShannonBounds.RichPortSystem.sep_neutral_ports`:
+  [Fintype α]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype α] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: ShannonBounds/PortRealisation.lean:129:0: automatically included section variable(s) unused in theorem `ShannonBounds.RichPortSystem.sep_neutral_transversal`:
+  [Fintype α]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype α] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: ShannonBounds/PortRealisation.lean:137:0: automatically included section variable(s) unused in theorem `ShannonBounds.RichPortSystem.sep_footprints`:
+  [Fintype α]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype α] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: ShannonBounds/PortRealisation.lean:145:0: automatically included section variable(s) unused in theorem `ShannonBounds.RichPortSystem.sep_footprint_other_transversal`:
+  [Fintype α]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype α] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: ShannonBounds/PortRealisation.lean:186:0: automatically included section variable(s) unused in theorem `ShannonBounds.RichPortSystem.ep_injOn`:
+  [Fintype α]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype α] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: ShannonBounds/PortRealisation.lean:191:8: automatically included section variable(s) unused in theorem `ShannonBounds.RichPortSystem.card_fam_O`:
+  [Fintype α]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype α] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: ShannonBounds/PortRealisation.lean:199:8: automatically included section variable(s) unused in theorem `ShannonBounds.RichPortSystem.card_fam_B`:
+  [Fintype α]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype α] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: ShannonBounds/PortRealisation.lean:203:8: automatically included section variable(s) unused in theorem `ShannonBounds.RichPortSystem.card_fam_N`:
+  [Fintype α]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype α] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+⚠ [2051/2064] Built ShannonBounds.Reindex (5.8s)
+warning: ShannonBounds/Reindex.lean:40:8: automatically included section variable(s) unused in theorem `ShannonBounds.Realisation.w_reindex`:
+  [Fintype V]
+  [DecidableEq V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fintype V] [DecidableEq V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+✔ [2052/2064] Built ShannonBounds.DagTail (6.4s)
+✔ [2053/2064] Built ShannonBounds.DagCode3 (9.1s)
+✔ [2054/2064] Built ShannonBounds.BaseC13Ports (31s)
+✔ [2055/2064] Built ShannonBounds.BaseC13PIndep (151s)
+✔ [2056/2064] Built ShannonBounds.BaseC13Foot (151s)
+✔ [2057/2064] Built ShannonBounds.TerminalCodes (217s)
+✔ [2058/2064] Built ShannonBounds.Substitutions (265s)
+✔ [2059/2064] Built ShannonBounds.CertC13b (87s)
+✔ [2060/2064] Built ShannonBounds.BaseC13Priv (195s)
+✔ [2061/2064] Built ShannonBounds.BaseC13 (1.9s)
+✔ [2062/2064] Built ShannonBounds.CycleC13 (2.3s)
+✔ [2063/2064] Built ShannonBounds.CapC13 (3.7s)
+ℹ [2064/2064] Built ShannonBounds.CapCertC13b (2.1s)
+info: ShannonBounds/CapCertC13b.lean:92:0: 'ShannonBounds.CertC13b.bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ ShannonBounds.CertC13b.stepM._native.native_decide.ax_1_1,
+ ShannonBounds.Substitutions.S2b._native.native_decide.ax_1,
+ ShannonBounds.Substitutions.S2b._native.native_decide.ax_2,
+ ShannonBounds.Substitutions.S3c._native.native_decide.ax_1,
+ ShannonBounds.Substitutions.S3c._native.native_decide.ax_2,
+ ShannonBounds.TerminalCodes.K3a._native.native_decide.ax_1]
+info: ShannonBounds/CapCertC13b.lean:93:0: 'ShannonBounds.CapCertC13b.shannonCapacity_cycleGraph_13_ge' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ ShannonBounds.BaseC13.SAboundCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SAindCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SAnodupCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SAnotSCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SF0boundCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SF0lenCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SF0nodupCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SF1boundCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SF1lenCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SF1nodupCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SPboundCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SPinSCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SPlenCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SPnodupCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SXboundCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SXindCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SXlenCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SXsortCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SXsubCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SboundCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SindCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SlenCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SsortCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SsubCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.fp0Check._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.fp1Check._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.pairConflict._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.privCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.repBoundCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.repSynCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.sconf_cases._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.sconf_iff_conflict._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.sconf_refl._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.sconf_shift._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.sconf_symm._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.sepCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.sigOffCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.tvecCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.wit0Check._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.wit1Check._native.native_decide.ax_1_1,
+ ShannonBounds.CapCertC13b.shannonCapacity_cycleGraph_13_ge._native.native_decide.ax_1_1,
+ ShannonBounds.CertC13b.stepM._native.native_decide.ax_1_1,
+ ShannonBounds.Substitutions.S2b._native.native_decide.ax_1,
+ ShannonBounds.Substitutions.S2b._native.native_decide.ax_2,
+ ShannonBounds.Substitutions.S3c._native.native_decide.ax_1,
+ ShannonBounds.Substitutions.S3c._native.native_decide.ax_2,
+ ShannonBounds.TerminalCodes.K3a._native.native_decide.ax_1]
+info: ShannonBounds/CapCertC13b.lean:94:0: 'ShannonBounds.CapCertC13b.tight' depends on axioms: [propext,
+ ShannonBounds.CapCertC13b.tight._native.native_decide.ax_1_1,
+ ShannonBounds.CapCertC13b.tight._native.native_decide.ax_1_2]
+Build completed successfully (2064 jobs).
+    build OK in 665 s
+
+==> 6. theorem statement and axioms (fresh Lean process on the built modules)
+ShannonBounds.CapCertC13b.shannonCapacity_cycleGraph_13_ge : 6.302927071589786 ≤
+  ShannonBounds.shannonCapacity (cycleGraph 13)
+def ShannonBounds.shannonCapacity.{u_2} : {V : Type u_2} → SimpleGraph V → [Fintype V] → ℝ :=
+fun {V} G [Fintype V] => ⨆ n, ↑(G.strongPower (n + 1)).indepNum ^ (1 / (↑n + 1))
+'ShannonBounds.CapCertC13b.shannonCapacity_cycleGraph_13_ge' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ ShannonBounds.BaseC13.SAboundCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SAindCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SAnodupCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SAnotSCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SF0boundCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SF0lenCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SF0nodupCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SF1boundCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SF1lenCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SF1nodupCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SPboundCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SPinSCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SPlenCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SPnodupCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SXboundCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SXindCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SXlenCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SXsortCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SXsubCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SboundCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SindCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SlenCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SsortCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.SsubCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.fp0Check._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.fp1Check._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.pairConflict._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.privCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.repBoundCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.repSynCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.sconf_cases._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.sconf_iff_conflict._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.sconf_refl._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.sconf_shift._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.sconf_symm._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.sepCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.sigOffCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.tvecCheck._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.wit0Check._native.native_decide.ax_1_1,
+ ShannonBounds.BaseC13.wit1Check._native.native_decide.ax_1_1,
+ ShannonBounds.CapCertC13b.shannonCapacity_cycleGraph_13_ge._native.native_decide.ax_1_1,
+ ShannonBounds.CertC13b.stepM._native.native_decide.ax_1_1,
+ ShannonBounds.Substitutions.S2b._native.native_decide.ax_1,
+ ShannonBounds.Substitutions.S2b._native.native_decide.ax_2,
+ ShannonBounds.Substitutions.S3c._native.native_decide.ax_1,
+ ShannonBounds.Substitutions.S3c._native.native_decide.ax_2,
+ ShannonBounds.TerminalCodes.K3a._native.native_decide.ax_1]
+    statement OK: (6.302927071589786 : ℝ) ≤ ShannonBounds.shannonCapacity (SimpleGraph.cycleGraph 13)
+    axioms OK: propext, Classical.choice, Quot.sound + 47 native_decide auxiliary axioms; no sorryAx
+
+==> 7. grep for sorry/admit in all Lean sources
+    no sorry/admit in ShannonBounds/*.lean or ShannonBounds.lean
+
+==> summary: BPZ aa21eeb12b75b0413d3fa9fb4208b5d0bf2c4d65 + certC13.patch; Lake version 5.0.0-src+f3b06c7 (Lean version 4.32.2); Mathlib 905b95818eb32af7874a58b427f50c1711a5e96c; finished 2026-10-01T19:04:51Z
+ALL CHECKS PASSED (Lean 4 build + statement + axioms, independent Python with exact BPZ controls, exact comparison with Protti v0.5.0)
+  Theta(C13) >= 6.302927071589786   [ShannonBounds.CapCertC13b.shannonCapacity_cycleGraph_13_ge; prior: Protti 6.302927046770772, BPZ 6.302926729310108]
+EXIT 0
